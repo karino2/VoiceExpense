@@ -4,21 +4,25 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class EntryActivity extends ActionBarActivity {
@@ -68,11 +72,18 @@ public class EntryActivity extends ActionBarActivity {
 
     }
 
+    SpeechRecognizer recognizer;
+    RecognitionListener recognitionListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         database = new Database();
         database.open(this);
+
+        setupSpeechRecognizer();
+
+
 
         setContentView(R.layout.entry);
 
@@ -97,6 +108,83 @@ public class EntryActivity extends ActionBarActivity {
         {
             setupEntryValue();
         }
+    }
+
+    private void setupSpeechRecognizer() {
+        recognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        recognitionListener = new RecognitionListener() {
+            @Override
+            public void onReadyForSpeech(Bundle params) {
+                showMessage("OnReady for speech");
+                Log.d("VoiceExpense", "onReady");
+            }
+
+            @Override
+            public void onBeginningOfSpeech() {
+                Log.d("VoiceExpense", "onBeginning");
+
+            }
+
+            @Override
+            public void onRmsChanged(float rmsdB) {
+                // Log.d("VoiceExpense", "onRms");
+            }
+
+            @Override
+            public void onBufferReceived(byte[] buffer) {
+                Log.d("VoiceExpense", "onBuf");
+            }
+
+            @Override
+            public void onEndOfSpeech() {
+                Log.d("VoiceExpense", "onEoS");
+
+            }
+
+            @Override
+            public void onError(int error) {
+                Log.d("VoiceExpense", "onError");
+                startListening();
+            }
+
+            @Override
+            public void onResults(Bundle results) {
+                ArrayList<String> reses = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                Log.d("VoiceExpense", "onResults: " + reses.toString());
+                startListening();
+            }
+
+            @Override
+            public void onPartialResults(Bundle partialResults) {
+                Log.d("VoiceExpense", "onPartialResults");
+
+            }
+
+            @Override
+            public void onEvent(int eventType, Bundle params) {
+                Log.d("VoiceExpense", "onEvent");
+
+            }
+        };
+        recognizer.setRecognitionListener(recognitionListener);
+        Log.d("VoiceExpense", "onSetup");
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        startListening();
+    }
+
+    private void startListening() {
+        recognizer.startListening(RecognizerIntent.getVoiceDetailsIntent(this));
+    }
+
+    @Override
+    protected void onPause() {
+        recognizer.stopListening();
+        super.onPause();
     }
 
     private boolean isEditMode() {
@@ -272,13 +360,13 @@ public class EntryActivity extends ActionBarActivity {
         {
             case R.id.menu_import_item:
                 startActivityForResult(new Intent(this, FilePickerActivity.class), REQUEST_PICK_FILE);
-                break;
+                return true;
             case R.id.menu_category_item:
                 startActivity(new Intent(this, CategoryActivity.class));
-                break;
+                return true;
             case R.id.menu_history_item:
                 startActivity(new Intent(this, HistoryActivity.class));
-                break;
+                return true;
 
         }
         return super.onOptionsItemSelected(item);
