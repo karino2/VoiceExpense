@@ -4,24 +4,16 @@ package com.livejournal.karino2.voiceexpense;
 import java.util.Date;
 import java.util.Hashtable;
 
-import org.junit.Before;
-import org.junit.Test;
 
-import com.livejournal.karino2.DailyExpenseMemo.BookActivity;
-import com.livejournal.karino2.DailyExpenseMemo.CsvImporter;
-import com.livejournal.karino2.DailyExpenseMemo.Database;
-import com.livejournal.karino2.DailyExpenseMemo.Entry;
-import com.livejournal.karino2.DailyExpenseMemo.EntryActivity;
-import com.livejournal.karino2.DailyExpenseMemo.EntryStorable;
-import com.livejournal.karino2.DailyExpenseMemo.EntryStore;
-import static org.junit.Assert.*;
+import junit.framework.TestCase;
+
 
 public class CsvImporterTest extends TestCase {
 	
 	long returnId;
 	String argCategory;
-	
-	@Before
+
+	@Override
 	public void setUp()
 	{
 		returnId = -1;
@@ -48,7 +40,6 @@ public class CsvImporterTest extends TestCase {
 	
 	static final long BOOK_ID = 5; // whatever.
 	
-	@Test
 	public void test_readLine_newCategory() {
 		long categoryId = 9; 
 		returnId = categoryId;
@@ -61,7 +52,6 @@ public class CsvImporterTest extends TestCase {
 		assertEquals("うどん", ent.getMemo());		
 	}
 	
-	@Test
 	public void test_readLine_noMemo() {
 		long categoryId = 9; 
 		returnId = categoryId;
@@ -73,7 +63,6 @@ public class CsvImporterTest extends TestCase {
 		assertEquals(105, ent.getPrice());
 	}
 	
-	@Test
 	public void test_readLine_price_int() {
 		long categoryId = 9; 
 		returnId = categoryId;
@@ -85,7 +74,6 @@ public class CsvImporterTest extends TestCase {
 	}
 	
 	// also basic test of EntryStore.
-	@Test
 	public void test_readLine_knownCategory_with_real_EntryStore() {
 		long foodId = 4;
 		
@@ -113,7 +101,6 @@ public class CsvImporterTest extends TestCase {
 	}
 	
 	// EntryActivityTest
-	@Test
 	public void test_nextDate_endOfMonth()
 	{
 		Date dt = createDate(2011, 11, 30);
@@ -122,7 +109,6 @@ public class CsvImporterTest extends TestCase {
 		assertEqualsDate(2011,12,1, next);		
 	}
 	
-	@Test
 	public void test_prevDate_beginningOfMonth()
 	{
 		Date dt = createDate(2011, 11, 1);
@@ -131,7 +117,6 @@ public class CsvImporterTest extends TestCase {
 		assertEqualsDate(2011,10,31, prev);		
 	}
 	
-	@Test
 	public void test_beforeDate()
 	{
 		Date input = createDate(2011, 11, 4);
@@ -140,7 +125,6 @@ public class CsvImporterTest extends TestCase {
 		assertEqualsDate(2011, 11, 1, actual);		
 	}
 	
-	@Test
 	public void test_betweenDate()
 	{
 		Date inputFrom = createDate(2011, 11, 4);
@@ -150,31 +134,26 @@ public class CsvImporterTest extends TestCase {
 		assertEquals(3, actual);
 	}
 	
-	@Test
 	public void test_sanitize_normal()
 	{
 		validateSanitize("hoge", "hoge");
 	}
 	
-	@Test
 	public void test_sanitize_return()
 	{
 		validateSanitize("ab\ncd", "ab cd");
 	}
 	
-	@Test
 	public void test_sanitize_dblquote()
 	{
 		validateSanitize("\"abc", " abc");
 	}
 	
-	@Test
 	public void test_sanitize_comma()
 	{
 		validateSanitize("a,b", "a b");		
 	}
 	
-	@Test
 	public void test_sanitize_mix()
 	{
 		validateSanitize("a,b\nc", "a b c");
