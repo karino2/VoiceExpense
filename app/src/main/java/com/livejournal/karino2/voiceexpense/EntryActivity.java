@@ -111,7 +111,6 @@ public class EntryActivity extends ActionBarActivity {
         setSpinnerSelection(ent);
         setETText(R.id.money_edit, String.valueOf(ent.getPrice()));
         setETText(R.id.memo_edit, ent.getMemo());
-        ((CheckBox)findViewById(R.id.business_checkbox)).setChecked(ent.isBusiness());
         Button del = ((Button)findViewById(R.id.del_button));
         del.setEnabled(true);
         del.setOnClickListener(new View.OnClickListener() {
@@ -150,7 +149,6 @@ public class EntryActivity extends ActionBarActivity {
     }
 
     private void clearEntry() {
-        ((CheckBox)findViewById(R.id.business_checkbox)).setChecked(false);
         setETText(R.id.money_edit, "0");
         setETText(R.id.memo_edit, "");
         getCategorySpinner().setSelection(0);
@@ -208,9 +206,8 @@ public class EntryActivity extends ActionBarActivity {
         long category = getCategorySpinner().getSelectedItemId();
         int price = Integer.valueOf(getETText(R.id.money_edit));
         String memo = getETText(R.id.memo_edit);
-        boolean isBusiness = ((CheckBox)findViewById(R.id.business_checkbox)).isChecked();
 
-        return new Entry(entryId, date, category, memo, price, bookId, isBusiness);
+        return new Entry(entryId, date, category, memo, price, bookId);
     }
 
     Date getDate() {

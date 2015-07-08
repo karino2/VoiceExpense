@@ -42,17 +42,7 @@ public class CsvImporter {
 			String memo = "";
 			if(vals.length == 4)
 				memo = vals[3];
-			return new Entry(dt, category, memo, price, bookId, false);
-		}
-		else if (vals.length == 5)
-		{
-			// date, category, price, memo, business
-			Date dt = new Date(vals[0]);
-			long category = storable.toId(vals[1]);
-			int price = Math.abs(((int)Double.parseDouble(vals[2])));
-			String memo = vals[3];
-			boolean business = "business".equals(vals[4]);
-			return new Entry(dt, category, memo, price, bookId, business);
+			return new Entry(dt, category, memo, price, bookId);
 		}
 		throw new RuntimeException("invalid csv, NYI");
 	}

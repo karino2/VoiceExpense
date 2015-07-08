@@ -42,7 +42,6 @@ public class Database {
                     + "CATEGORY INTEGER,"
                     + "MEMO TEXT,"
                     + "PRICE INTEGER,"
-                    + "BUSINESS INTEGER,"
                     + "BOOK INTEGER"
                     + ");");
             
@@ -119,7 +118,7 @@ public class Database {
 		builder.setTables("entry LEFT OUTER JOIN category ON (entry.CATEGORY = category._id) ");
 		
 		return builder.query(database, new String[] {
-		"entry._id AS _id", "DATE", "NAME", "MEMO", "PRICE", "BUSINESS" 
+		"entry._id AS _id", "DATE", "NAME", "MEMO", "PRICE"
 		}, "book = ?", new String[] { String.valueOf(bookId) }, null, null, "DATE DESC, _id DESC");
 	}
 	
@@ -180,7 +179,6 @@ public class Database {
 		values.put("MEMO", entry.getMemo());
 		values.put("PRICE", entry.getPrice());
 		values.put("BOOK", entry.getBookId());
-		values.put("BUSINESS", entry.isBusiness() ? 1 : 0);
 	}
 	
 
@@ -208,7 +206,7 @@ public class Database {
 	}
 
 	public Entry fetchEntry(long bookId, long entryId) {
-		Cursor cursor = database.query(ENTRY_TABLE_NAME, new String[]{"_id",  "DATE", "CATEGORY", "MEMO", "PRICE", "BUSINESS" },
+		Cursor cursor = database.query(ENTRY_TABLE_NAME, new String[]{"_id",  "DATE", "CATEGORY", "MEMO", "PRICE" },
 				"_id = ?", new String[] { String.valueOf(entryId) }, null, null, null);
 		cursor.moveToFirst();
 		Entry ent = new Entry(cursor.getLong(0),
@@ -216,8 +214,7 @@ public class Database {
 				cursor.getLong(2),
 				cursor.getString(3),
 				cursor.getInt(4),
-				bookId,
-				cursor.getInt(5) == 1 ? true : false);
+				bookId);
 		cursor.close();
 		return ent;
 	}
