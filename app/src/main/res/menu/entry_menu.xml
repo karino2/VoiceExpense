@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/menu_import_item" android:title="@string/import_menu_label"></item>
+    <item android:id="@+id/menu_category_item" android:title="Category"></item>
+    <item android:id="@+id/menu_history_item" android:title="History"></item>
+</menu>

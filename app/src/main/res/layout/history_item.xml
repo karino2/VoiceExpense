@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+
+	<TextView
+	    android:layout_margin="5dip"
+	    android:layout_height="wrap_content" android:id="@+id/dateTextView"
+		android:layout_width="wrap_content"></TextView>
+	<TextView
+	    android:layout_margin="5dip"
+	    android:layout_height="wrap_content" android:id="@+id/categoryTextView"
+		android:layout_width="wrap_content"></TextView>
+   	<TextView
+ 	    android:layout_margin="5dip"
+   	    android:layout_height="wrap_content" android:id="@+id/memoTextView"
+		android:layout_width="wrap_content"></TextView>
+   	<TextView
+   	    android:layout_margin="5dip"
+   	    android:layout_height="wrap_content" android:id="@+id/businessView"
+		android:layout_width="wrap_content"></TextView>
+   	<TextView
+	    android:layout_margin="5dip"
+   	    android:layout_height="wrap_content" android:id="@+id/priceTextView"
+		android:layout_width="wrap_content"></TextView>
+   	    	    	    	    	    
+
+</LinearLayout>

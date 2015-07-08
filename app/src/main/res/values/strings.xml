@@ -1,6 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">VoiceExpense</string>
+    <string name="app_name">DailyExpenseMemo</string>
+    <string name="business_checkbox_label">Business</string>
+    <string name="save_button_label">Save</string>
+    <string name="import_menu_label">Import</string>
+    <string name="menu_new_book_label">New Book</string>
+    <string name="delete_label">Delete</string>
+    <string name="delete_all_label">Delete All</string>
+    <string name="average_label">Average</string>
+    <string name="total_label">Total</string>
+    <string name="prev_7_days_label">Last 7 days</string>
+    <string name="prev_30_days_label">Last 30 days</string>
+    <string name="all_past_label">Until yesterday</string>
+    <string name="today_label">Today</string>
+    <string name="yesterday_label">Yesterday</string>
+    <string name="export_label">Export</string>
+    <string name="title_activity_daily_expense_memo">DailyExpenseMemoActivity</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
 
     <string name="hello_world">Hello world!</string>
+
     <string name="action_settings">Settings</string>
+    <string name="title_activity_entry">EntryActivity</string>
+    <string name="title_activity_file_picker">FilePickerActivity</string>
+    <string name="title_activity_history">HistoryActivity</string>
+    <string name="title_activity_category">CategoryActivity</string>        
 </resources>

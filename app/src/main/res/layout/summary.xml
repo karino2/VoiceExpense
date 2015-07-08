@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:stretchColumns="1">
+    <TableRow>
+        <TextView
+            android:layout_column="1"
+            android:gravity="center_horizontal"
+            android:text="@string/average_label"
+            android:padding="3dip" />
+        <TextView
+            android:text="@string/total_label"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+
+    <View
+        android:layout_height="2dip"
+        android:background="#FF909090" />
+
+    
+    <TableRow>
+        <TextView
+            android:text="@string/today_label"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/today_total"
+            android:layout_column="2"
+            android:text="1200"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+    
+    <TableRow>
+        <TextView
+            android:text="@string/yesterday_label"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/yesterday_total"
+            android:layout_column="2"
+            android:text="1200"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+        
+    <TableRow>
+        <TextView
+            android:text="@string/prev_7_days_label"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/prev_7_days_avg"
+            android:gravity="center_horizontal"
+            android:text="1200"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/prev_7_days_total"
+            android:text="150000"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+    
+    <TableRow>
+        <TextView
+            android:text="@string/prev_30_days_label"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/prev_30_days_avg"
+            android:gravity="center_horizontal"
+            android:text="1200"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/prev_30_days_total"
+            android:text="1500000"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+        
+    <TableRow>
+        <TextView
+            android:text="@string/all_past_label"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/all_past_avg"
+            android:gravity="center_horizontal"
+            android:text="1200"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/all_past_total"
+            android:text="1500000"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+</TableLayout>
