@@ -14,6 +14,8 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 
 public class VoiceEntryActivity extends ActionBarActivity {
     Database database;
@@ -22,11 +24,20 @@ public class VoiceEntryActivity extends ActionBarActivity {
     SpeechRecognizer recognizer;
     RecognitionListener recognitionListener;
 
+    ArrayList<Command> commandList = new ArrayList<>();
+    WordAnalyzer wordAnalyzer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_voice_entry);
+
+        setupCommandList();
+        wordAnalyzer = new WordAnalyzer(new ArrayList<>(Arrays.asList(new String[]{
+                "図書研究費", "接待交際費", "旅費交通費", "雑費", "消耗品費", "租税公課",
+                "通信費", "会議費", "医療費"
+        })), new Date());
+
 
         database = new Database();
         database.open(this);
@@ -45,6 +56,15 @@ public class VoiceEntryActivity extends ActionBarActivity {
         });
     }
 
+    private void setupCommandList() {
+        commandList.add(new Command("次"){
+            public void action() {
+                showMessage("Action: Next!");
+                writeConsole("Action: Next");
+            }
+        });
+    }
+
 
     private void setVoiceButtonChecked(boolean enabled) {
         ToggleButton tb = findToggleVoiceButton();
@@ -55,6 +75,26 @@ public class VoiceEntryActivity extends ActionBarActivity {
         return (ToggleButton)findViewById(R.id.toggleButtonVoice);
     }
 
+    void parseEntry(String entry) {
+        ArrayList<String> tokens = wordAnalyzer.tokenize(entry);
+        for(String token : tokens) {
+            if(wordAnalyzer.isDate(token)) {
+                Date dt = wordAnalyzer.toDate(token);
+                setTextTo(R.id.editTextDate, dt.toString());
+            } else if(wordAnalyzer.isPrice(token)) {
+                setTextTo(R.id.editTextPrice, Integer.toString(wordAnalyzer.toPrice(token)));
+            } else if(wordAnalyzer.isCategory(token)) {
+                setTextTo(R.id.editTextCategory, token);
+            } else {
+                writeConsole("unknown: " + token);
+            }
+        }
+    }
+
+    private void setTextTo(int rid, String text) {
+        EditText et = (EditText)findViewById(rid);
+        et.setText(text);
+    }
 
     private void setupSpeechRecognizer() {
         recognizer = SpeechRecognizer.createSpeechRecognizer(this);
@@ -97,6 +137,8 @@ public class VoiceEntryActivity extends ActionBarActivity {
             public void onResults(Bundle results) {
                 ArrayList<String> reses = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 writeConsole("res: " + reses.toString());
+                String entry = reses.get(0);
+                parseEntry(entry);
                 startListeningRaw();
             }
 
@@ -140,13 +182,14 @@ public class VoiceEntryActivity extends ActionBarActivity {
         super.onStart();
 
         setupSpeechRecognizer();
-        startListening();
+        // startListening();
     }
 
     @Override
     protected void onPause() {
         recognizer.stopListening();
         recognizer.destroy();
+        recognizer = null;
         super.onPause();
     }
 

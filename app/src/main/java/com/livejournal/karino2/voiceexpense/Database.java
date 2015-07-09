@@ -42,7 +42,8 @@ public class Database {
                     + "CATEGORY INTEGER,"
                     + "MEMO TEXT,"
                     + "PRICE INTEGER,"
-                    + "BOOK INTEGER"
+                    + "BOOK INTEGER,"
+					+ "UPDATEDATE INTEGER"
                     + ");");
             
     		ContentValues values = new ContentValues();

@@ -25,8 +25,11 @@ public class WordAnalyzerTest extends TestCase {
     }
 
     public void testTokenize() {
-        String[] tokens = normalEntry.split(" ");
-        assertEquals(4, tokens.length);
+        assertEquals(4, target.tokenize(normalEntry).size());
+    }
+
+    public void testTokenize_SpecialHandlingOfNext() {
+        assertEquals(4, target.tokenize("接待交際費 7月8日 210円次").size());
     }
 
     ArrayList<String> getCategories() {

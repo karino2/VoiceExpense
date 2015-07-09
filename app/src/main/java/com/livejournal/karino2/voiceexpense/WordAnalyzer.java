@@ -82,4 +82,18 @@ public class WordAnalyzer {
     public boolean isCategory(String word) {
         return contains(word, categories);
     }
+
+    public ArrayList<String> tokenize(String fullEntry) {
+        ArrayList<String> res = new ArrayList<>();
+
+        // special handling for last "NEXT" because of SpeechRecognizer behavior.
+        if(fullEntry.length() > 2 && fullEntry.endsWith("次") && !fullEntry.endsWith(" 次")) {
+            String[] tokens1 = fullEntry.substring(0, fullEntry.length()-1).split(" ");
+            res.addAll(Arrays.asList(tokens1));
+            res.add("次");
+            return res;
+        }
+        res.addAll(Arrays.asList(fullEntry.split(" ")));
+        return res;
+    }
 }
