@@ -144,7 +144,7 @@ public class EntryActivity extends ActionBarActivity {
             @Override
             public void onError(int error) {
                 Log.d("VoiceExpense", "onError");
-                startListening();
+                // startListening();
             }
 
             @Override

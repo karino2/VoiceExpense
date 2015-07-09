@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.livejournal.karino2.voiceexpense" >
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
@@ -34,6 +34,10 @@
         <activity
             android:name=".CategoryActivity"
             android:label="@string/title_activity_category" >
+        </activity>
+        <activity
+            android:name=".VoiceEntryActivity"
+            android:label="@string/title_activity_voice_entry" >
         </activity>
     </application>
 

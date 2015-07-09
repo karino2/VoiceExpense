@@ -51,7 +51,8 @@ public class BookActivity extends ListActivity {
                 long bookId = c.getLong(0);
                 EntryActivity.saveBookId(BookActivity.this, bookId);
 
-                Intent intent = new Intent(BookActivity.this, EntryActivity.class);
+                // Intent intent = new Intent(BookActivity.this, EntryActivity.class);
+                Intent intent = new Intent(BookActivity.this, VoiceEntryActivity.class);
                 startActivity(intent);
             }});
 
