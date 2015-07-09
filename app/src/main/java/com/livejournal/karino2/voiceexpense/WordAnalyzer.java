@@ -87,8 +87,16 @@ public class WordAnalyzer {
         return candidates.contains(word);
     }
 
+    public String findCategory(String word) {
+        for(String cat : categories) {
+            if(word.startsWith(cat))
+                return cat;
+        }
+        return "";
+    }
+
     public boolean isCategory(String word) {
-        return contains(word, categories);
+        return (findCategory(word).length() != 0);
     }
 
     public ArrayList<String> tokenize(String fullEntry) {

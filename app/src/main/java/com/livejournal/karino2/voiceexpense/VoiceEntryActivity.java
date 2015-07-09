@@ -75,6 +75,17 @@ public class VoiceEntryActivity extends ActionBarActivity {
         return (ToggleButton)findViewById(R.id.toggleButtonVoice);
     }
 
+    Command findCommand(String token) {
+        for(Command cmd : commandList) {
+            if(cmd.isMatch(token))
+                return cmd;
+        }
+        return null;
+    }
+    boolean isCommand(String token) {
+        return findCommand(token) != null ;
+    }
+
     void parseEntry(String entry) {
         ArrayList<String> tokens = wordAnalyzer.tokenize(entry);
         for(String token : tokens) {
@@ -92,9 +103,14 @@ public class VoiceEntryActivity extends ActionBarActivity {
                 setTextTo(R.id.editTextPrice, Integer.toString(wordAnalyzer.toPrice(token)));
                 token = token.substring(wordAnalyzer.remainingPos());
             } else if (wordAnalyzer.isCategory(token)) {
-                setTextTo(R.id.editTextCategory, token);
-                return;
+                String cat = wordAnalyzer.findCategory(token);
+                setTextTo(R.id.editTextCategory, cat);
+                token = token.substring(cat.length());
             } else {
+                if(isCommand(token)) {
+                    findCommand(token).action();
+                    return;
+                }
                 writeConsole("unknown: " + token);
                 return;
             }

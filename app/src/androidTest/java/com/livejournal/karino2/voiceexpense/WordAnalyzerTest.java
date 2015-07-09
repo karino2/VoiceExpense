@@ -42,6 +42,13 @@ public class WordAnalyzerTest extends TestCase {
         assertFalse(target.isCategory("7月8日"));
     }
 
+    public void testFindCategory() {
+        String input = "接待交際費7月8日";
+        String actual = target.findCategory(input);
+        assertEquals("接待交際費", actual);
+        assertEquals("7月8日", input.substring(actual.length()));
+    }
+
     public void testIsPrice() {
         assertTrue(target.isPrice("720円"));
         assertFalse(target.isPrice("8日"));
