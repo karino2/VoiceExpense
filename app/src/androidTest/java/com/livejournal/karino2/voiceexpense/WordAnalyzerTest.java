@@ -28,10 +28,6 @@ public class WordAnalyzerTest extends TestCase {
         assertEquals(4, target.tokenize(normalEntry).size());
     }
 
-    public void testTokenize_SpecialHandlingOfNext() {
-        assertEquals(4, target.tokenize("接待交際費 7月8日 210円次").size());
-    }
-
     ArrayList<String> getCategories() {
         return new ArrayList<String>(Arrays.asList(categoriesArray));
     }
@@ -67,6 +63,14 @@ public class WordAnalyzerTest extends TestCase {
     public void testToDate() {
         assertDateEqual(baseDate.getYear(), 7, 8, target.toDate("7月8日"));
         assertDateEqual(2013, 7, 8, target.toDate("2013年7月8日"));
+    }
+
+    public void testToDate_Remaining() {
+        String input = "7月8日120円";
+        assertTrue(target.isDate(input));
+        target.toDate(input);
+        assertEquals(4, target.remainingPos());
+        assertEquals("120円", input.substring(target.remainingPos()));
     }
 
     public void assertDateEqual(int year, int month, int day, Date dt) {

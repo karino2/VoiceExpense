@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  * Created by karino on 7/8/15.
  */
 public class WordAnalyzer {
-    Pattern pricePat = Pattern.compile("(^[0-9]+)円$");
+    Pattern pricePat = Pattern.compile("(^[0-9]+)円");
     Pattern fullDatePat = Pattern.compile("^([0-9]+)年([0-9]+)月([0-9]+)日");
     Pattern monthDatePat = Pattern.compile("^([0-9]+)月([0-9]+)日");
     Pattern dateOnlyPat = Pattern.compile("^([0-9]+)日");
@@ -30,24 +30,26 @@ public class WordAnalyzer {
                 isMatch(word, dateOnlyPat);
     }
 
+    int remaining = -1;
+    public int remainingPos() {
+        return remaining;
+    }
+
     public Date toDate(String word) {
         if(isMatch(word, fullDatePat)) {
-            Matcher matcher = fullDatePat.matcher(word);
-            matcher.find();
+            Matcher matcher = match(word, fullDatePat);
             return new Date(getMatchedInt(word, matcher, 1),
                     getMatchedInt(word, matcher, 2),
                     getMatchedInt(word, matcher, 3));
 
         } else if(isMatch(word, monthDatePat)) {
-            Matcher matcher = monthDatePat.matcher(word);
-            matcher.find();
+            Matcher matcher = match(word, monthDatePat);
             return new Date(baseDate.getYear(),
                     getMatchedInt(word, matcher, 1),
                     getMatchedInt(word, matcher, 2));
 
         }
-        Matcher matcher = dateOnlyPat.matcher(word);
-        matcher.find();
+        Matcher matcher = match(word, dateOnlyPat);
         return new Date(baseDate.getYear(),
                 baseDate.getMonth(),
                 getMatchedInt(word, matcher, 1));
@@ -62,10 +64,16 @@ public class WordAnalyzer {
         return matcher.lookingAt();
     }
 
+    Matcher match(String word, Pattern pat) {
+        Matcher matcher = pat.matcher(word);
+        matcher.find();
+        remaining = matcher.end();
+        return matcher;
+    }
+
     public int toPrice(String word)
     {
-        Matcher matcher = pricePat.matcher(word);
-        matcher.find();
+        Matcher matcher = match(word, pricePat);
 
         return getMatchedInt(word, matcher, 1);
     }
@@ -84,16 +92,6 @@ public class WordAnalyzer {
     }
 
     public ArrayList<String> tokenize(String fullEntry) {
-        ArrayList<String> res = new ArrayList<>();
-
-        // special handling for last "NEXT" because of SpeechRecognizer behavior.
-        if(fullEntry.length() > 2 && fullEntry.endsWith("次") && !fullEntry.endsWith(" 次")) {
-            String[] tokens1 = fullEntry.substring(0, fullEntry.length()-1).split(" ");
-            res.addAll(Arrays.asList(tokens1));
-            res.add("次");
-            return res;
-        }
-        res.addAll(Arrays.asList(fullEntry.split(" ")));
-        return res;
+        return new ArrayList<>(Arrays.asList(fullEntry.split(" ")));
     }
 }

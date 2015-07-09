@@ -78,15 +78,25 @@ public class VoiceEntryActivity extends ActionBarActivity {
     void parseEntry(String entry) {
         ArrayList<String> tokens = wordAnalyzer.tokenize(entry);
         for(String token : tokens) {
-            if(wordAnalyzer.isDate(token)) {
+            parseToken(token);
+        }
+    }
+
+    private void parseToken(String token) {
+        while (token.length() > 0) {
+            if (wordAnalyzer.isDate(token)) {
                 Date dt = wordAnalyzer.toDate(token);
                 setTextTo(R.id.editTextDate, dt.toString());
-            } else if(wordAnalyzer.isPrice(token)) {
+                token = token.substring(wordAnalyzer.remainingPos());
+            } else if (wordAnalyzer.isPrice(token)) {
                 setTextTo(R.id.editTextPrice, Integer.toString(wordAnalyzer.toPrice(token)));
-            } else if(wordAnalyzer.isCategory(token)) {
+                token = token.substring(wordAnalyzer.remainingPos());
+            } else if (wordAnalyzer.isCategory(token)) {
                 setTextTo(R.id.editTextCategory, token);
+                return;
             } else {
                 writeConsole("unknown: " + token);
+                return;
             }
         }
     }
