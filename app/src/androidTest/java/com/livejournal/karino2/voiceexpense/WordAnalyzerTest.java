@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * Created by karino on 7/9/15.
@@ -16,9 +17,11 @@ public class WordAnalyzerTest extends TestCase {
     String normalEntry = "接待交際費 7月8日 210円 次";
 
     WordAnalyzer target;
+    Date baseDate;
     @Override
     protected void setUp() {
-        target = new WordAnalyzer(getCategories());
+        baseDate = new Date(2015, 7, 8);
+        target = new WordAnalyzer(getCategories(), baseDate);
     }
 
     public void testTokenize() {
@@ -40,4 +43,32 @@ public class WordAnalyzerTest extends TestCase {
         assertFalse(target.isCategory("7月8日"));
     }
 
+    public void testIsPrice() {
+        assertTrue(target.isPrice("720円"));
+        assertFalse(target.isPrice("8日"));
+        assertFalse(target.isPrice("720"));
+        assertFalse(target.isPrice("これは720円"));
+    }
+
+    public void testToPrice() {
+        assertEquals(720, target.toPrice("720円"));
+    }
+
+    public void testIsDate() {
+        assertTrue(target.isDate("7月8日"));
+        assertTrue(target.isDate("8日"));
+        assertFalse(target.isDate("接待交際費"));
+        assertFalse(target.isDate("720円"));
+    }
+
+    public void testToDate() {
+        assertDateEqual(baseDate.getYear(), 7, 8, target.toDate("7月8日"));
+        assertDateEqual(2013, 7, 8, target.toDate("2013年7月8日"));
+    }
+
+    public void assertDateEqual(int year, int month, int day, Date dt) {
+        assertEquals(year, dt.getYear());
+        assertEquals(month, dt.getMonth());
+        assertEquals(day, dt.getDate());
+    }
 }
