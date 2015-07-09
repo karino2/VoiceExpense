@@ -38,14 +38,14 @@ public class WordAnalyzer {
     public Date toDate(String word) {
         if(isMatch(word, fullDatePat)) {
             Matcher matcher = match(word, fullDatePat);
-            return new Date(getMatchedInt(word, matcher, 1),
-                    getMatchedInt(word, matcher, 2),
+            return new Date(getMatchedInt(word, matcher, 1)-1900,
+                    getMatchedInt(word, matcher, 2)-1,
                     getMatchedInt(word, matcher, 3));
 
         } else if(isMatch(word, monthDatePat)) {
             Matcher matcher = match(word, monthDatePat);
             return new Date(baseDate.getYear(),
-                    getMatchedInt(word, matcher, 1),
+                    getMatchedInt(word, matcher, 1)-1,
                     getMatchedInt(word, matcher, 2));
 
         }

@@ -183,6 +183,17 @@ public class BookActivity extends ListActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    void setupDefaultCetegoriesForDebug() {
+        String[] categoriesArray = new String[] {
+                "図書研究費", "接待交際費","旅費交通費", "雑費", "消耗品費", "租税公課",
+                "通信費", "会議費", "医療費"
+        };
+        for(String cat : categoriesArray) {
+            database.newCategory(cat);
+        }
+
+    }
+
     @Override
     protected Dialog onCreateDialog(int id) {
         switch(id)
@@ -214,6 +225,7 @@ public class BookActivity extends ListActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 database.recreate();
+                                setupDefaultCetegoriesForDebug();
                                 cursor.requery();
                             }})
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener(){

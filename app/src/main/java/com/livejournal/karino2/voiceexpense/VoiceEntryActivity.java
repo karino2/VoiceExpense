@@ -1,5 +1,6 @@
 package com.livejournal.karino2.voiceexpense;
 
+import android.content.Intent;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -13,36 +14,49 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Hashtable;
 
 public class VoiceEntryActivity extends ActionBarActivity {
     Database database;
     long bookId;
+    long entryId = -1;
+    long prevId = -1;
 
     SpeechRecognizer recognizer;
     RecognitionListener recognitionListener;
 
     ArrayList<Command> commandList = new ArrayList<>();
     WordAnalyzer wordAnalyzer;
+    Hashtable<Long, String> categoriesMap;
+
+    String firstCategory() {
+        for(String cat : categoriesMap.values())
+            return cat;
+        throw new IllegalArgumentException("Never happen");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_voice_entry);
 
-        setupCommandList();
-        wordAnalyzer = new WordAnalyzer(new ArrayList<>(Arrays.asList(new String[]{
-                "図書研究費", "接待交際費", "旅費交通費", "雑費", "消耗品費", "租税公課",
-                "通信費", "会議費", "医療費"
-        })), new Date());
-
 
         database = new Database();
         database.open(this);
 
         bookId = EntryActivity.getBookId(this);
+
+        setupCommandList();
+
+        categoriesMap = database.fetchCategories();
+
+        wordAnalyzer = new WordAnalyzer(new ArrayList<>(categoriesMap.values()), new Date());
+        setTextTo(R.id.editTextCategory, firstCategory());
+
 
 
         ToggleButton tb = findToggleVoiceButton();
@@ -60,11 +74,18 @@ public class VoiceEntryActivity extends ActionBarActivity {
         commandList.add(new Command("次"){
             public void action() {
                 writeConsole("Action: Next");
+                prevId = save();
+                clearEntry();
             }
         });
         commandList.add(new Command("前"){
             public void action() {
                 writeConsole("Action: Prev");
+                if(prevId == -1) {
+                    showMessage("NYI for this case. Ignore for a while.");
+                    return;
+                }
+                loadEntry(prevId);
             }
         });
     }
@@ -97,11 +118,20 @@ public class VoiceEntryActivity extends ActionBarActivity {
         }
     }
 
+    String dateToString(Date dt) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        return sdf.format(dt);
+    }
+
+    void setDate(Date dt) {
+        setTextTo(R.id.editTextDate, dateToString(dt));
+    }
+
     private void parseToken(String token) {
         while (token.length() > 0) {
             if (wordAnalyzer.isDate(token)) {
                 Date dt = wordAnalyzer.toDate(token);
-                setTextTo(R.id.editTextDate, dt.toString());
+                setDate(dt);
                 token = token.substring(wordAnalyzer.remainingPos());
             } else if (wordAnalyzer.isPrice(token)) {
                 setTextTo(R.id.editTextPrice, Integer.toString(wordAnalyzer.toPrice(token)));
@@ -125,6 +155,71 @@ public class VoiceEntryActivity extends ActionBarActivity {
         EditText et = (EditText)findViewById(rid);
         et.setText(text);
     }
+
+    private String getETText(int rid)
+    {
+        return ((EditText)findViewById(rid)).getText().toString();
+    }
+
+    private long save() {
+        Entry ent = generateEntry();
+        if(ent.getId() == -1)
+            return database.insert(ent);
+        else {
+            database.update(ent);
+            return ent.getId();
+        }
+    }
+
+
+
+    private Entry generateEntry() {
+        Date date = getDate();
+
+        long category = getCategoryId();
+        // replace to spinner in the future.
+        // long category = getCategorySpinner().getSelectedItemId();
+        int price = Integer.valueOf(getETText(R.id.editTextPrice));
+        String memo = getETText(R.id.editTextMemo);
+
+        return new Entry(entryId, date, category, memo, price, bookId);
+    }
+
+    Date getDate() {
+        Date date = new Date(getETText(R.id.editTextDate));
+        return date;
+    }
+
+    long getCategoryId() {
+        String cat = getETText(R.id.editTextCategory);
+        for(Hashtable.Entry<Long, String> ent : categoriesMap.entrySet()) {
+            if(ent.getValue().equals(cat))
+                return ent.getKey();
+
+        }
+        throw new IllegalArgumentException("This will be impossible in the future");
+    }
+
+    void clearEntry() {
+        setTextTo(R.id.editTextPrice, "0");
+        setTextTo(R.id.editTextMemo, "");
+        setTextTo(R.id.editTextCategory, firstCategory());
+        // do not clear date.
+        entryId = -1;
+    }
+
+    void loadEntry(long entId) {
+        Entry ent = database.fetchEntry(bookId, entId);
+        setDate(ent.getDate());
+        setTextTo(R.id.editTextCategory, categoriesMap.get(ent.getCategoryId()));
+        setTextTo(R.id.editTextPrice, String.valueOf(ent.getPrice()));
+        setTextTo(R.id.editTextMemo, ent.getMemo());
+
+        prevId = entryId;
+        entryId = ent.getId();
+
+    }
+
 
     private void setupSpeechRecognizer() {
         recognizer = SpeechRecognizer.createSpeechRecognizer(this);
@@ -187,11 +282,6 @@ public class VoiceEntryActivity extends ActionBarActivity {
 
     }
 
-    private void startListening() {
-        setVoiceButtonChecked(true);
-        // startListeningRaw();
-    }
-
     void log(String msg) {
         Log.d("VoiceExpense", msg);
     }
@@ -237,16 +327,19 @@ public class VoiceEntryActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch(id) {
+            case R.id.menu_import_item:
+                showMessage("NYI");
+                return true;
+            case R.id.menu_category_item:
+                startActivity(new Intent(this, CategoryActivity.class));
+                return true;
+            case R.id.menu_history_item:
+                startActivity(new Intent(this, HistoryActivity.class));
+                return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

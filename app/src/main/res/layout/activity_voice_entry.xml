@@ -76,7 +76,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Note"
+        android:text="Memo"
         android:id="@+id/textView5"
         android:layout_below="@+id/editTextPrice"
         android:layout_alignParentLeft="true"
@@ -85,7 +85,7 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editTextNote"
+        android:id="@+id/editTextMemo"
         android:layout_below="@+id/editTextPrice"
         android:layout_alignLeft="@+id/editTextPrice"
         android:layout_alignStart="@+id/editTextPrice"
@@ -96,7 +96,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/editTextConsole"
-        android:layout_below="@+id/editTextNote"
+        android:layout_below="@+id/editTextMemo"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"

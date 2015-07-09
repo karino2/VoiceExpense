@@ -20,8 +20,12 @@ public class WordAnalyzerTest extends TestCase {
     Date baseDate;
     @Override
     protected void setUp() {
-        baseDate = new Date(2015, 7, 8);
+        baseDate = new Date(2015-1900, 7-1, 8);
         target = new WordAnalyzer(getCategories(), baseDate);
+    }
+
+    public void testTestData() {
+        assertEquals(new Date("2015/7/8"), baseDate);
     }
 
     public void testTokenize() {
@@ -68,8 +72,8 @@ public class WordAnalyzerTest extends TestCase {
     }
 
     public void testToDate() {
-        assertDateEqual(baseDate.getYear(), 7, 8, target.toDate("7月8日"));
-        assertDateEqual(2013, 7, 8, target.toDate("2013年7月8日"));
+        assertDateEqual(baseDate.getYear(), 7-1, 8, target.toDate("7月8日"));
+        assertDateEqual(2013-1900, 7-1, 8, target.toDate("2013年7月8日"));
     }
 
     public void testToDate_Remaining() {

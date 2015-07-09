@@ -157,9 +157,9 @@ public class Database {
 	}
 	
 	
-	public void insert(Entry entry) {
+	public long insert(Entry entry) {
 		ContentValues values = valuesFrom(entry);		
-		database.insert(ENTRY_TABLE_NAME, null, values);
+		return database.insert(ENTRY_TABLE_NAME, null, values);
 	}
 
 	public void update(Entry entry) {
