@@ -32,8 +32,8 @@
         android:text="2015/07/06"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_toRightOf="@+id/textView4"
-        android:layout_toEndOf="@+id/textView4" />
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_toEndOf="@+id/textView2" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -49,10 +49,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/editTextCategory"
         android:layout_alignTop="@+id/textView2"
-        android:layout_alignLeft="@+id/editTextDate"
-        android:layout_alignStart="@+id/editTextDate"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_toEndOf="@+id/textView2" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -76,28 +76,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Command"
-        android:id="@+id/textView4"
-        android:layout_below="@+id/editTextPrice"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editTextCommand"
-        android:layout_below="@+id/editTextPrice"
-        android:layout_alignLeft="@+id/editTextPrice"
-        android:layout_alignStart="@+id/editTextPrice"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="Note"
         android:id="@+id/textView5"
-        android:layout_below="@+id/editTextCommand"
+        android:layout_below="@+id/editTextPrice"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -105,11 +86,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/editTextNote"
-        android:layout_below="@+id/editTextCommand"
-        android:layout_alignLeft="@+id/editTextCommand"
-        android:layout_alignStart="@+id/editTextCommand"
-        android:layout_alignRight="@+id/editTextCommand"
-        android:layout_alignEnd="@+id/editTextCommand" />
+        android:layout_below="@+id/editTextPrice"
+        android:layout_alignLeft="@+id/editTextPrice"
+        android:layout_alignStart="@+id/editTextPrice"
+        android:layout_alignRight="@+id/editTextPrice"
+        android:layout_alignEnd="@+id/editTextPrice" />
 
     <EditText
         android:layout_width="wrap_content"

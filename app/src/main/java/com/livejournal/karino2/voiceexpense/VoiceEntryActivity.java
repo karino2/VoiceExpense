@@ -59,8 +59,12 @@ public class VoiceEntryActivity extends ActionBarActivity {
     private void setupCommandList() {
         commandList.add(new Command("次"){
             public void action() {
-                showMessage("Action: Next!");
                 writeConsole("Action: Next");
+            }
+        });
+        commandList.add(new Command("前"){
+            public void action() {
+                writeConsole("Action: Prev");
             }
         });
     }
