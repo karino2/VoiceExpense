@@ -417,6 +417,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
             recognizer.stopListening();
             recognizer.destroy();
             recognizer = null;
+            setVoiceButtonChecked(false);
         }
         if(sensorListener != null) {
             sensorManager.unregisterListener(sensorListener);
