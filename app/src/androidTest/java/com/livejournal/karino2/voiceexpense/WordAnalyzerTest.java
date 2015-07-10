@@ -60,6 +60,10 @@ public class WordAnalyzerTest extends TestCase {
         assertFalse(target.isPrice("これは720円"));
     }
 
+    public void testIsPriceAlt() {
+        assertTrue(target.isPrice("720en"));
+        assertTrue(target.isPrice("720園"));
+    }
     public void testToPrice() {
         assertEquals(720, target.toPrice("720円"));
     }
@@ -82,6 +86,13 @@ public class WordAnalyzerTest extends TestCase {
         target.toDate(input);
         assertEquals(4, target.remainingPos());
         assertEquals("120円", input.substring(target.remainingPos()));
+    }
+
+    public void testToPriceAlt_Remaining() {
+        String input = "120en7月8日";
+        assertTrue(target.isPrice(input));
+        assertEquals(120, target.toPrice(input));
+        assertEquals("7月8日", input.substring(target.remainingPos()));
     }
 
     public void assertDateEqual(int year, int month, int day, Date dt) {
