@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -39,6 +41,11 @@ public class VoiceEntryActivity extends ActionBarActivity {
         throw new IllegalArgumentException("Never happen");
     }
 
+    void setEndVoiceEnabled(boolean enabled) {
+        Button btn = (Button)findViewById(R.id.buttonEndVoice);
+        btn.setEnabled(enabled);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +64,18 @@ public class VoiceEntryActivity extends ActionBarActivity {
         wordAnalyzer = new WordAnalyzer(new ArrayList<>(categoriesMap.values()), new Date());
         setTextTo(R.id.editTextCategory, firstCategory());
 
+        Button btn = (Button)findViewById(R.id.buttonEndVoice);
+        btn.setEnabled(false);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(recognizer != null)
+                {
+                    recognizer.stopListening();
+                }
+                setEndVoiceEnabled(false);
+            }
+        });
 
 
         ToggleButton tb = findToggleVoiceButton();
@@ -228,6 +247,8 @@ public class VoiceEntryActivity extends ActionBarActivity {
             public void onReadyForSpeech(Bundle params) {
                 showMessage("OnReady for speech");
                 log("onReady");
+
+                setEndVoiceEnabled(true);
             }
 
             @Override
@@ -256,6 +277,8 @@ public class VoiceEntryActivity extends ActionBarActivity {
             public void onError(int error) {
                 log("onError");
                 setVoiceButtonChecked(false);
+                setEndVoiceEnabled(false);
+
             }
 
             @Override
@@ -307,9 +330,11 @@ public class VoiceEntryActivity extends ActionBarActivity {
 
     @Override
     protected void onPause() {
-        recognizer.stopListening();
-        recognizer.destroy();
-        recognizer = null;
+        if(recognizer != null) {
+            recognizer.stopListening();
+            recognizer.destroy();
+            recognizer = null;
+        }
         super.onPause();
     }
 
