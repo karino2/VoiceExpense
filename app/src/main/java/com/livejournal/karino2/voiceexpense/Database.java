@@ -180,6 +180,7 @@ public class Database {
 		values.put("MEMO", entry.getMemo());
 		values.put("PRICE", entry.getPrice());
 		values.put("BOOK", entry.getBookId());
+        values.put("UPDATEDATE",  ((new Date()).getTime()));
 	}
 	
 
