@@ -1,6 +1,10 @@
 package com.livejournal.karino2.voiceexpense;
 
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -18,9 +22,9 @@ import android.widget.ToggleButton;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 
 public class VoiceEntryActivity extends ActionBarActivity {
     Database database;
@@ -34,6 +38,8 @@ public class VoiceEntryActivity extends ActionBarActivity {
     ArrayList<Command> commandList = new ArrayList<>();
     WordAnalyzer wordAnalyzer;
     Hashtable<Long, String> categoriesMap;
+
+    SensorManager sensorManager;
 
     String firstCategory() {
         for(String cat : categoriesMap.values())
@@ -51,6 +57,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_voice_entry);
 
+        sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 
         database = new Database();
         database.open(this);
@@ -320,12 +327,88 @@ public class VoiceEntryActivity extends ActionBarActivity {
         et.setText(msg + "\n" + et.getText().toString());
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    Sensor getAccelerometerSensor() {
+        List<Sensor> sensors = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
+        if(sensors.size() >= 1) {
+            return sensors.get(0);
+        }
+        return null;
+    }
 
+    SensorEventListener sensorListener;
+
+    long lastTick = -1;
+    long lastFire = -1;
+    float lastXMax;
+    float lastXMin;
+    float lastYMax;
+    float lastYMin;
+    float lastZMax;
+    float lastZMin;
+    long getNowTick() { return ((new Date())).getTime();}
+
+    final long TICK_THRESHOLD_MSEC = 250;
+    final float DISTANCE_THRESHOLD = 15;
+
+    void onShake() {
+        setVoiceButtonChecked(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         setupSpeechRecognizer();
-        // startListening();
+
+        Sensor sensor = getAccelerometerSensor();
+        if(sensor != null) {
+            sensorListener = new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent event) {
+                    long nowMil = getNowTick();
+                    if(lastFire != -1 && (nowMil - lastFire < TICK_THRESHOLD_MSEC*4)) {
+                        // writeConsole("already fire");
+                        return;
+                    }
+
+                    if(lastTick == -1 || nowMil-lastTick > TICK_THRESHOLD_MSEC ) {
+                        lastXMin = lastXMax = event.values[0];
+                        lastYMin = lastYMax = event.values[1];
+                        lastZMin = lastZMax = event.values[2];
+
+                        lastTick = nowMil;
+                        // writeConsole("new sense, "+lastXMin + "," + lastXMax);
+                        return;
+                    }
+
+                    lastXMin = Math.min(lastXMin, event.values[0]);
+                    lastXMax = Math.max(lastXMax, event.values[0]);
+                    lastYMin = Math.min(lastYMin, event.values[1]);
+                    lastYMax = Math.max(lastYMax, event.values[1]);
+                    lastZMin = Math.min(lastZMin, event.values[2]);
+                    lastZMax = Math.max(lastZMax, event.values[2]);
+
+                    lastTick = nowMil;
+                    // log("sense, "+lastXMin + "," + lastXMax);
+
+                    if(lastXMax - lastXMin > DISTANCE_THRESHOLD ||
+                            lastYMax - lastYMin > DISTANCE_THRESHOLD ||
+                            lastZMax - lastZMin > DISTANCE_THRESHOLD) {
+                        lastFire = nowMil;
+                        writeConsole("shake");
+
+                        onShake();
+                    }
+
+
+                }
+
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+                }
+            };
+            sensorManager.registerListener(sensorListener, sensor, SensorManager.SENSOR_DELAY_UI);
+        }
     }
 
     @Override
@@ -334,6 +417,10 @@ public class VoiceEntryActivity extends ActionBarActivity {
             recognizer.stopListening();
             recognizer.destroy();
             recognizer = null;
+        }
+        if(sensorListener != null) {
+            sensorManager.unregisterListener(sensorListener);
+            sensorListener = null;
         }
         super.onPause();
     }
