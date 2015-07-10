@@ -130,8 +130,8 @@ public class BookActivity extends ActionBarActivity {
     void exportToWriter(Cursor cursor, BufferedWriter bw) throws IOException {
         do
         {
-            // cursor:  "DATE", "NAME", "MEMO", "PRICE", "BUSINESS"
-            // output: date, category, price, memo, business
+            // cursor:  "DATE", "NAME", "MEMO", "PRICE", "UPDATEDATE"
+            // output: date, category, price, memo, updatedate
 
             // date
             SimpleDateFormat  sdf = new SimpleDateFormat("yyyy/MM/dd");
@@ -146,10 +146,9 @@ public class BookActivity extends ActionBarActivity {
             // memo
             bw.write(sanitize(cursor.getString(3)));
             bw.write(",");
-            if(cursor.getInt(5) == 1)
-                bw.write("business");
-            else
-                bw.write("private");
+            // update date
+            bw.write(sdf.format(new Date(cursor.getLong(5))));
+
             bw.newLine();
         }
         while(cursor.moveToNext());
@@ -168,7 +167,7 @@ public class BookActivity extends ActionBarActivity {
     }
 
     public static File getFileStoreDirectory() throws IOException {
-        File dir = new File(Environment.getExternalStorageDirectory(), "DailyExpenseMemo");
+        File dir = new File(Environment.getExternalStorageDirectory(), "VoiceExpense");
         ensureDirExist(dir);
         return dir;
     }

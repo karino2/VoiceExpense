@@ -119,7 +119,7 @@ public class Database {
 		builder.setTables("entry LEFT OUTER JOIN category ON (entry.CATEGORY = category._id) ");
 		
 		return builder.query(database, new String[] {
-		"entry._id AS _id", "DATE", "NAME", "MEMO", "PRICE"
+		"entry._id AS _id", "DATE", "NAME", "MEMO", "PRICE", "UPDATEDATE"
 		}, "book = ?", new String[] { String.valueOf(bookId) }, null, null, "DATE DESC, _id DESC");
 	}
 	
