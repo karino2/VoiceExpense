@@ -1,6 +1,7 @@
 package com.livejournal.karino2.voiceexpense;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -8,6 +9,7 @@ import android.hardware.SensorManager;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -41,12 +44,6 @@ public class VoiceEntryActivity extends ActionBarActivity {
 
     SensorManager sensorManager;
 
-    String firstCategory() {
-        for(String cat : categoriesMap.values())
-            return cat;
-        throw new IllegalArgumentException("Never happen");
-    }
-
     void setEndVoiceEnabled(boolean enabled) {
         Button btn = (Button)findViewById(R.id.buttonEndVoice);
         btn.setEnabled(enabled);
@@ -69,7 +66,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
         categoriesMap = database.fetchCategories();
 
         wordAnalyzer = new WordAnalyzer(new ArrayList<>(categoriesMap.values()), new Date());
-        setTextTo(R.id.editTextCategory, firstCategory());
+        setUpCategorySpinner();
 
         Button btn = (Button)findViewById(R.id.buttonEndVoice);
         btn.setEnabled(false);
@@ -94,6 +91,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
                 }
             }
         });
+
     }
 
     private void setupCommandList() {
@@ -116,6 +114,22 @@ public class VoiceEntryActivity extends ActionBarActivity {
         });
     }
 
+
+    Spinner getCategorySpinner() {
+        Spinner spinner = (Spinner)findViewById(R.id.spinnerCategory);
+        return spinner;
+    }
+
+    void setUpCategorySpinner() {
+        Spinner spinner = getCategorySpinner();
+
+        Cursor cursor = database.fetchCategoriesCursor();
+        startManagingCursor(cursor);
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, cursor,
+                new String[]{"NAME"}, new int[] {android.R.id.text1});
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+    }
 
     private void setVoiceButtonChecked(boolean enabled) {
         ToggleButton tb = findToggleVoiceButton();
@@ -164,7 +178,8 @@ public class VoiceEntryActivity extends ActionBarActivity {
                 token = token.substring(wordAnalyzer.remainingPos());
             } else if (wordAnalyzer.isCategory(token)) {
                 String cat = wordAnalyzer.findCategory(token);
-                setTextTo(R.id.editTextCategory, cat);
+
+                setSpinnerByCategoryName(cat);
                 token = token.substring(cat.length());
             } else {
                 if(isCommand(token)) {
@@ -202,9 +217,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
     private Entry generateEntry() {
         Date date = getDate();
 
-        long category = getCategoryId();
-        // replace to spinner in the future.
-        // long category = getCategorySpinner().getSelectedItemId();
+        long category = getCategorySpinner().getSelectedItemId();
         int price = Integer.valueOf(getETText(R.id.editTextPrice));
         String memo = getETText(R.id.editTextMemo);
 
@@ -216,28 +229,48 @@ public class VoiceEntryActivity extends ActionBarActivity {
         return date;
     }
 
-    long getCategoryId() {
-        String cat = getETText(R.id.editTextCategory);
-        for(Hashtable.Entry<Long, String> ent : categoriesMap.entrySet()) {
-            if(ent.getValue().equals(cat))
-                return ent.getKey();
-
-        }
-        throw new IllegalArgumentException("This will be impossible in the future");
-    }
 
     void clearEntry() {
         setTextTo(R.id.editTextPrice, "0");
         setTextTo(R.id.editTextMemo, "");
-        setTextTo(R.id.editTextCategory, firstCategory());
+        getCategorySpinner().setSelection(0);
         // do not clear date.
         entryId = -1;
     }
 
+    void setSpinnerByCategoryName(String catName) {
+        for(Hashtable.Entry<Long, String> entry : categoriesMap.entrySet()) {
+            if(entry.getValue().equals(catName)) {
+                setSpinnerByCategoryId(entry.getKey());
+                return;
+            }
+        }
+    }
+
+    void setSpinnerByCategoryId(long catId) {
+        int position = -1;
+
+        Cursor categoryCursor = database.fetchCategoriesCursor();
+        categoryCursor.moveToFirst();
+        for(int i = 0; i < categoryCursor.getCount(); i++)
+        {
+            if(catId == categoryCursor.getLong(0))
+            {
+                position = i;
+                break;
+            }
+            categoryCursor.moveToNext();
+        }
+        categoryCursor.close();
+        if(position != -1)
+            getCategorySpinner().setSelection(position);
+    }
+
+
     void loadEntry(long entId) {
         Entry ent = database.fetchEntry(bookId, entId);
         setDate(ent.getDate());
-        setTextTo(R.id.editTextCategory, categoriesMap.get(ent.getCategoryId()));
+        setSpinnerByCategoryId(ent.getCategoryId());
         setTextTo(R.id.editTextPrice, String.valueOf(ent.getPrice()));
         setTextTo(R.id.editTextMemo, ent.getMemo());
 
