@@ -47,8 +47,8 @@ public class Database {
                     + ");");
             
     		ContentValues values = new ContentValues();
-    		values.put("NAME", "Foods"); // add one entry for less special case.
-            db.insert(CATEGORY_TABLE_NAME, null, values);
+    		values.put("NAME", "雑費"); // add one entry for less special case.
+			db.insert(CATEGORY_TABLE_NAME, null, values);
         }
 
         @Override
