@@ -4,18 +4,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.SimpleCursorAdapter.ViewBinder;
 import android.widget.TextView;
 
-public class HistoryActivity extends ListActivity {
+public class HistoryActivity extends ActionBarActivity {
 
     Database database;
 
@@ -23,6 +24,9 @@ public class HistoryActivity extends ListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_list);
+
         database = new Database();
         database.open(this);
 
@@ -49,9 +53,11 @@ public class HistoryActivity extends ListActivity {
                 }
                 return false;
             }});
-        setListAdapter(adapter);
 
-        getListView().setOnItemClickListener(new OnItemClickListener() {
+        ListView lv = (ListView)findViewById(R.id.listView);
+        lv.setAdapter(adapter);
+
+        lv.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -62,7 +68,6 @@ public class HistoryActivity extends ListActivity {
                 startActivity(intent);
             }});
 
-        super.onCreate(savedInstanceState);
     }
 
 }

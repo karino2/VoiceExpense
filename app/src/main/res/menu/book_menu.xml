@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/menu_new_book_item" android:title="@string/menu_new_book_label"></item>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/menu_new_book_item" android:title="@string/menu_new_book_label" app:showAsAction="always"></item>
     <item android:id="@+id/menu_delete_all_item" android:title="@string/delete_all_label"></item>
 </menu>

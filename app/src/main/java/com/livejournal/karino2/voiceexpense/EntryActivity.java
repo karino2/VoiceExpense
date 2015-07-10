@@ -81,7 +81,6 @@ public class EntryActivity extends ActionBarActivity {
         setUpTenKeys();
         setUpDateNavigater();
 
-
         ((Button)findViewById(R.id.save_button)).setOnClickListener(new View.OnClickListener(){
 
             @Override

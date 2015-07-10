@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.BufferedWriter;
@@ -26,7 +28,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class BookActivity extends ListActivity {
+public class BookActivity extends ActionBarActivity {
 
     static final int INPUT_DIALOG_ID = 1;
     static final int QUERY_DELETE_DIALOG_ID = 2;
@@ -35,14 +37,17 @@ public class BookActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_list);
+        ListView lv = (ListView)findViewById(R.id.listView);
+
         database = new Database();
         database.open(this);
         cursor = database.fetchBooksCursor();
 
         startManagingCursor(cursor);
-        setListAdapter(new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1,
-                cursor, new String[] {"NAME"}, new int[] {android.R.id.text1 }));
-        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lv.setAdapter(new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1,
+                cursor, new String[]{"NAME"}, new int[]{android.R.id.text1}));
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View arg1, int position,
@@ -54,9 +59,10 @@ public class BookActivity extends ListActivity {
                 // Intent intent = new Intent(BookActivity.this, EntryActivity.class);
                 Intent intent = new Intent(BookActivity.this, VoiceEntryActivity.class);
                 startActivity(intent);
-            }});
+            }
+        });
 
-        registerForContextMenu(getListView());
+        registerForContextMenu(lv);
     }
 
     @Override
@@ -244,7 +250,7 @@ public class BookActivity extends ListActivity {
     }
 
     @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId())
         {
             case R.id.menu_new_book_item:
@@ -254,6 +260,6 @@ public class BookActivity extends ListActivity {
                 showDialog(QUERY_DELETE_DIALOG_ID);
                 break;
         }
-        return super.onMenuItemSelected(featureId, item);
+        return super.onOptionsItemSelected(item);
     }
 }
