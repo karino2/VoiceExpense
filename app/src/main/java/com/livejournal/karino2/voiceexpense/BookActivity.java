@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedWriter;
@@ -130,7 +131,8 @@ public class BookActivity extends ActionBarActivity {
                 cursor.requery();
                 break;
             case R.id.export_item:
-                exportBook(info.id);
+                String chosenBookName = ((TextView) info.targetView.findViewById(android.R.id.text1)).getText().toString();
+                exportBook(info.id, chosenBookName);
                 break;
             case R.id.import_item:
                 selectedBookId = info.id;
@@ -145,12 +147,12 @@ public class BookActivity extends ActionBarActivity {
         return super.onContextItemSelected(item);
     }
 
-    private void exportBook(long id) {
+    private void exportBook(long id, String bookName) {
         try {
             File dir = getFileStoreDirectory();
 
             SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyyMMdd_HHmmssSS");
-            String filename = timeStampFormat.format(new Date()) + ".csv";
+            String filename = bookName + "_" + timeStampFormat.format(new Date()) + ".csv";
             File file = new File(dir, filename);
 
             showMessage("saved at " + file.getAbsolutePath());
