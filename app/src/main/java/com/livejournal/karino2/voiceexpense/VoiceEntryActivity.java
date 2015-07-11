@@ -39,7 +39,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
     RecognitionListener recognitionListener;
 
     ArrayList<Command> commandList = new ArrayList<>();
-    WordAnalyzer wordAnalyzer;
+    SpeechParser speechParser;
     Hashtable<Long, String> categoriesMap;
 
     SensorManager sensorManager;
@@ -65,7 +65,8 @@ public class VoiceEntryActivity extends ActionBarActivity {
 
         categoriesMap = database.fetchCategories();
 
-        wordAnalyzer = new WordAnalyzer(new ArrayList<>(categoriesMap.values()), new Date());
+        setupSpeechParser();
+
         setUpCategorySpinner();
 
         Button btn = (Button)findViewById(R.id.buttonEndVoice);
@@ -92,6 +93,37 @@ public class VoiceEntryActivity extends ActionBarActivity {
             }
         });
 
+    }
+
+    private void setupSpeechParser() {
+        WordAnalyzer wordAnalyzer = new WordAnalyzer(new ArrayList<>(categoriesMap.values()), new Date());
+        speechParser = new SpeechParser(wordAnalyzer, new SpeechParser.OnActionListener() {
+            @Override
+            public void actionDate(Date dt) {
+                setDate(dt);
+            }
+
+            @Override
+            public void actionPrice(int price) {
+                setTextTo(R.id.editTextPrice, Integer.toString(price));
+
+            }
+
+            @Override
+            public void actionCategory(String categoryName) {
+                setSpinnerByCategoryName(categoryName);
+            }
+
+            @Override
+            public void actionOther(String token) {
+                if(isCommand(token)) {
+                    findCommand(token).action();
+                    return;
+                }
+                writeConsole("unknown: " + token);
+
+            }
+        });
     }
 
     private void setupCommandList() {
@@ -152,10 +184,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
     }
 
     void parseEntry(String entry) {
-        ArrayList<String> tokens = wordAnalyzer.tokenize(entry);
-        for(String token : tokens) {
-            parseToken(token);
-        }
+        speechParser.parseEntry(entry);
     }
 
     String dateToString(Date dt) {
@@ -165,31 +194,6 @@ public class VoiceEntryActivity extends ActionBarActivity {
 
     void setDate(Date dt) {
         setTextTo(R.id.editTextDate, dateToString(dt));
-    }
-
-    private void parseToken(String token) {
-        while (token.length() > 0) {
-            if (wordAnalyzer.isDate(token)) {
-                Date dt = wordAnalyzer.toDate(token);
-                setDate(dt);
-                token = token.substring(wordAnalyzer.remainingPos());
-            } else if (wordAnalyzer.isPrice(token)) {
-                setTextTo(R.id.editTextPrice, Integer.toString(wordAnalyzer.toPrice(token)));
-                token = token.substring(wordAnalyzer.remainingPos());
-            } else if (wordAnalyzer.isCategory(token)) {
-                String cat = wordAnalyzer.findCategory(token);
-
-                setSpinnerByCategoryName(cat);
-                token = token.substring(cat.length());
-            } else {
-                if(isCommand(token)) {
-                    findCommand(token).action();
-                    return;
-                }
-                writeConsole("unknown: " + token);
-                return;
-            }
-        }
     }
 
     private void setTextTo(int rid, String text) {
