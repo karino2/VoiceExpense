@@ -15,11 +15,15 @@ public class SpeechParser {
         actionListener = listener;
     }
 
+    StringBuffer otherBuf;
     public void parseEntry(String entry) {
+        otherBuf = new StringBuffer();
         ArrayList<String> tokens = wordAnalyzer.tokenize(entry);
         for(String token : tokens) {
             parseToken(token);
         }
+
+        actionListener.actionOther(otherBuf.toString());
     }
 
     public interface OnActionListener {
@@ -43,7 +47,10 @@ public class SpeechParser {
                 actionListener.actionCategory(cat);
                 token = token.substring(cat.length());
             } else {
-                actionListener.actionOther(token);
+                if(otherBuf.length() != 0) {
+                    otherBuf.append(" ");
+                }
+                otherBuf.append(token);
                 return;
             }
         }

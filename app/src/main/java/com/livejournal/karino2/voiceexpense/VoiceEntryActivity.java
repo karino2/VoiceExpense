@@ -121,7 +121,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
                     return;
                 }
                 writeConsole("unknown: " + token);
-
+                setTextTo(R.id.editTextMemo, token);
             }
         });
     }
@@ -142,6 +142,13 @@ public class VoiceEntryActivity extends ActionBarActivity {
                     return;
                 }
                 loadEntry(prevId);
+            }
+        });
+        commandList.add(new Command("クリアメモ"){
+
+            @Override
+            public void action() {
+                setTextTo(R.id.editTextMemo, "");
             }
         });
     }
