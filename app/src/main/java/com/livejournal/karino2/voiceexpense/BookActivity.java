@@ -131,7 +131,7 @@ public class BookActivity extends ActionBarActivity {
         do
         {
             // cursor:  "DATE", "NAME", "MEMO", "PRICE", "UPDATEDATE"
-            // output: date, category, price, memo, updatedate
+            // output: date, category, price, memo
 
             // date
             SimpleDateFormat  sdf = new SimpleDateFormat("yyyy/MM/dd");
@@ -145,9 +145,6 @@ public class BookActivity extends ActionBarActivity {
             bw.write(",");
             // memo
             bw.write(sanitize(cursor.getString(3)));
-            bw.write(",");
-            // update date
-            bw.write(sdf.format(new Date(cursor.getLong(5))));
 
             bw.newLine();
         }
