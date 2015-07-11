@@ -368,24 +368,8 @@ public class VoiceEntryActivity extends ActionBarActivity {
         return null;
     }
 
-    SensorEventListener sensorListener;
 
-    long lastTick = -1;
-    long lastFire = -1;
-    float lastXMax;
-    float lastXMin;
-    float lastYMax;
-    float lastYMin;
-    float lastZMax;
-    float lastZMin;
-    long getNowTick() { return ((new Date())).getTime();}
-
-    final long TICK_THRESHOLD_MSEC = 250;
-    final float DISTANCE_THRESHOLD = 15;
-
-    void onShake() {
-        setVoiceButtonChecked(true);
-    }
+    ShakeGestureListener shakeListener;
 
     @Override
     protected void onResume() {
@@ -394,53 +378,14 @@ public class VoiceEntryActivity extends ActionBarActivity {
 
         Sensor sensor = getAccelerometerSensor();
         if(sensor != null) {
-            sensorListener = new SensorEventListener() {
+            shakeListener = new ShakeGestureListener(new ShakeGestureListener.OnShakeListener() {
                 @Override
-                public void onSensorChanged(SensorEvent event) {
-                    long nowMil = getNowTick();
-                    if(lastFire != -1 && (nowMil - lastFire < TICK_THRESHOLD_MSEC*4)) {
-                        // writeConsole("already fire");
-                        return;
-                    }
-
-                    if(lastTick == -1 || nowMil-lastTick > TICK_THRESHOLD_MSEC ) {
-                        lastXMin = lastXMax = event.values[0];
-                        lastYMin = lastYMax = event.values[1];
-                        lastZMin = lastZMax = event.values[2];
-
-                        lastTick = nowMil;
-                        // writeConsole("new sense, "+lastXMin + "," + lastXMax);
-                        return;
-                    }
-
-                    lastXMin = Math.min(lastXMin, event.values[0]);
-                    lastXMax = Math.max(lastXMax, event.values[0]);
-                    lastYMin = Math.min(lastYMin, event.values[1]);
-                    lastYMax = Math.max(lastYMax, event.values[1]);
-                    lastZMin = Math.min(lastZMin, event.values[2]);
-                    lastZMax = Math.max(lastZMax, event.values[2]);
-
-                    lastTick = nowMil;
-                    // log("sense, "+lastXMin + "," + lastXMax);
-
-                    if(lastXMax - lastXMin > DISTANCE_THRESHOLD ||
-                            lastYMax - lastYMin > DISTANCE_THRESHOLD ||
-                            lastZMax - lastZMin > DISTANCE_THRESHOLD) {
-                        lastFire = nowMil;
-                        writeConsole("shake");
-
-                        onShake();
-                    }
-
-
+                public void onShake() {
+                    setVoiceButtonChecked(true);
                 }
+            });
 
-                @Override
-                public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-                }
-            };
-            sensorManager.registerListener(sensorListener, sensor, SensorManager.SENSOR_DELAY_UI);
+            sensorManager.registerListener(shakeListener, sensor, SensorManager.SENSOR_DELAY_UI);
         }
     }
 
@@ -452,9 +397,9 @@ public class VoiceEntryActivity extends ActionBarActivity {
             recognizer = null;
             setVoiceButtonChecked(false);
         }
-        if(sensorListener != null) {
-            sensorManager.unregisterListener(sensorListener);
-            sensorListener = null;
+        if(shakeListener != null) {
+            sensorManager.unregisterListener(shakeListener);
+            shakeListener = null;
         }
         super.onPause();
     }
