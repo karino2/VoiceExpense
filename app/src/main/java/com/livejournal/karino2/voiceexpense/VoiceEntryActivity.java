@@ -87,6 +87,13 @@ public class VoiceEntryActivity extends ActionBarActivity {
             }
         });
 
+        entryId = getIntent().getLongExtra("EntryID", -1);
+        if(entryId != -1)
+        {
+            loadEntry(entryId);
+        }
+
+
     }
 
     private void setupSpeechParser() {
@@ -125,7 +132,12 @@ public class VoiceEntryActivity extends ActionBarActivity {
             public void action() {
                 writeConsole("Action: OK");
                 prevId = save();
-                clearEntry();
+                if(isEditMode()) {
+                    // back to HistoryActivity.
+                    finish();
+                } else {
+                    clearEntry();
+                }
             }
         });
         commandList.add(new Command("前"){
@@ -217,6 +229,9 @@ public class VoiceEntryActivity extends ActionBarActivity {
         }
     }
 
+    private boolean isEditMode() {
+        return Intent.ACTION_EDIT.equals(getIntent().getAction());
+    }
 
 
     private Entry generateEntry() {

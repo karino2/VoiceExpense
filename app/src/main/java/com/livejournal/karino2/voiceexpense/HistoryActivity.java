@@ -62,7 +62,7 @@ public class HistoryActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Intent intent = new Intent(HistoryActivity.this, EntryActivity.class);
+                Intent intent = new Intent(HistoryActivity.this, VoiceEntryActivity.class);
                 intent.setAction(Intent.ACTION_EDIT);
                 intent.putExtra("EntryID", id);
                 startActivity(intent);
