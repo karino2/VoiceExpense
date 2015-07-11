@@ -18,9 +18,10 @@ public class Database {
     private static final String CATEGORY_TABLE_NAME = "category";
     private static final String BOOK_TABLE_NAME = "book";
     private static final String TAG = "VoiceExpenseDatabase";
-	
-	
-    static class DatabaseHelper extends SQLiteOpenHelper {
+
+
+
+	static class DatabaseHelper extends SQLiteOpenHelper {
 
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -149,6 +150,12 @@ public class Database {
 	{
 		return insertNewName(name, BOOK_TABLE_NAME);
 	}
+	public void renameBook(long bookId, String newBookName) {
+		ContentValues values = new ContentValues();
+		values.put("NAME", newBookName);
+		database.update(BOOK_TABLE_NAME, values, "_id = ?", new String[] { String.valueOf(bookId) } );
+	}
+
 
 	long insertNewName(String name, String tableName) {
 		ContentValues values = new ContentValues();

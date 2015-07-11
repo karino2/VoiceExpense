@@ -16,4 +16,5 @@
     <string name="title_activity_category">CategoryActivity</string>
     <string name="title_activity_voice_entry">VoiceEntryActivity</string>
     <string name="label_end_voice">End Voice</string>
+    <string name="rename_label">Rename</string>
 </resources>

@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -35,6 +37,7 @@ public class BookActivity extends ActionBarActivity {
     static final int INPUT_DIALOG_ID = 1;
     static final int QUERY_DELETE_DIALOG_ID = 2;
     private static final int REQUEST_PICK_FILE = 3;
+    static final int RENAME_DIALOG_ID = 4;
 
     Database database;
     Cursor cursor;
@@ -90,6 +93,7 @@ public class BookActivity extends ActionBarActivity {
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+        menu.add(Menu.NONE, R.id.rename_item, Menu.NONE, R.string.rename_label);
         menu.add(Menu.NONE, R.id.export_item, Menu.NONE, R.string.export_label);
         menu.add(Menu.NONE, R.id.import_item, Menu.NONE, R.string.import_menu_label);
         menu.add(Menu.NONE, R.id.delete_item, Menu.NONE, R.string.delete_label);
@@ -109,9 +113,10 @@ public class BookActivity extends ActionBarActivity {
                 EntryStore store = new EntryStore(database);
                 store.setCategoryMap(database.fetchCategories());
                 CsvImporter importer = new CsvImporter(selectedBookId, store);
-                showMessage("import: " + path);
+                // showMessage("import: " + path);
                 try {
                     importer.importCsv(path);
+                    showMessage("Import Done");
                 } catch (IOException e) {
                     e.printStackTrace();
                     showMessage("IO exception while reading!");
@@ -144,13 +149,19 @@ public class BookActivity extends ActionBarActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch(item.getItemId())
         {
+            case R.id.rename_item:
+                selectedBookId = info.id;
+                Bundle args = new Bundle();
+                args.putLong("BOOK_ID", selectedBookId);
+                args.putString("BOOK_NAME", getChosenBookName(info));
+                showDialog(RENAME_DIALOG_ID, args);
+                break;
             case R.id.delete_item:
                 database.deleteBook(info.id);
                 cursor.requery();
                 break;
             case R.id.export_item:
-                String chosenBookName = ((TextView) info.targetView.findViewById(android.R.id.text1)).getText().toString();
-                exportBook(info.id, chosenBookName);
+                exportBook(info.id, getChosenBookName(info));
                 break;
             case R.id.import_item:
                 selectedBookId = info.id;
@@ -163,6 +174,11 @@ public class BookActivity extends ActionBarActivity {
 
         }
         return super.onContextItemSelected(item);
+    }
+
+    @NonNull
+    private String getChosenBookName(AdapterView.AdapterContextMenuInfo info) {
+        return ((TextView) info.targetView.findViewById(android.R.id.text1)).getText().toString();
     }
 
     private void exportBook(long id, String bookName) {
@@ -270,6 +286,47 @@ public class BookActivity extends ActionBarActivity {
             database.newCategory(cat);
         }
 
+    }
+
+    @Override
+    protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
+        super.onPrepareDialog(id, dialog, args);
+        switch(id) {
+            case RENAME_DIALOG_ID:
+                EditText et = (EditText)dialog.findViewById(R.id.book_name_edit);
+                et.setTag(args.getLong("BOOK_ID"));
+                et.setText(args.getString("BOOK_NAME"));
+                break;
+        }
+    }
+
+    @Nullable
+    @Override
+    protected Dialog onCreateDialog(int id, Bundle args) {
+        switch(id) {
+            case RENAME_DIALOG_ID:
+                LayoutInflater factory = LayoutInflater.from(this);
+                final View textEntryView = factory.inflate(R.layout.new_book_text_entry, null);
+                return new AlertDialog.Builder(this).setTitle("Rename Book")
+                        .setView(textEntryView)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                EditText et = (EditText)textEntryView.findViewById(R.id.book_name_edit);
+                                long bookId = (long)et.getTag();
+                                String newBookName = et.getText().toString();
+
+                                database.renameBook(bookId, newBookName);
+                                cursor.requery();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                            }
+                        })
+                        .create();
+
+        }
+        return super.onCreateDialog(id, args);
     }
 
     @Override
