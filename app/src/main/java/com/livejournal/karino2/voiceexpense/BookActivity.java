@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.PersistableBundle;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.os.Bundle;
@@ -66,6 +67,23 @@ public class BookActivity extends ActionBarActivity {
         });
 
         registerForContextMenu(lv);
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                ensureDefaultDataBase();
+            }
+        });
+    }
+
+    Handler handler = new Handler();
+
+    void ensureDefaultDataBase() {
+        if(cursor.getCount() == 0) {
+            setupDefaultCategories();
+            database.newBook("New Book");
+            cursor.requery();
+        }
     }
 
     @Override
@@ -243,7 +261,7 @@ public class BookActivity extends ActionBarActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    void setupDefaultCategoriesForDebug() {
+    void setupDefaultCategories() {
         String[] categoriesArray = new String[] {
                 "図書研究費", "接待交際費","旅費交通費", /* already added "雑費", */ "消耗品費", "租税公課",
                 "通信費", "会議費", "医療費"
@@ -285,7 +303,7 @@ public class BookActivity extends ActionBarActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 database.recreate();
-                                setupDefaultCategoriesForDebug();
+                                setupDefaultCategories();
                                 cursor.requery();
                             }})
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
