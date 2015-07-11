@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.PersistableBundle;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -31,6 +32,8 @@ public class BookActivity extends ActionBarActivity {
 
     static final int INPUT_DIALOG_ID = 1;
     static final int QUERY_DELETE_DIALOG_ID = 2;
+    private static final int REQUEST_PICK_FILE = 3;
+
     Database database;
     Cursor cursor;
     @Override
@@ -68,8 +71,53 @@ public class BookActivity extends ActionBarActivity {
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.add(Menu.NONE, R.id.delete_item, Menu.NONE, R.string.delete_label);
         menu.add(Menu.NONE, R.id.export_item, Menu.NONE, R.string.export_label);
+        menu.add(Menu.NONE, R.id.import_item, Menu.NONE, R.string.import_menu_label);
+        menu.add(Menu.NONE, R.id.delete_item, Menu.NONE, R.string.delete_label);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode)
+        {
+            case REQUEST_PICK_FILE:
+                if(resultCode != RESULT_OK)
+                    return;
+
+                    // start import.
+                String path = data.getData().getPath();
+                EntryStore store = new EntryStore(database);
+                store.setCategoryMap(database.fetchCategories());
+                CsvImporter importer = new CsvImporter(selectedBookId, store);
+                showMessage("import: " + path);
+                try {
+                    importer.importCsv(path);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    showMessage("IO exception while reading!");
+                } catch( RuntimeException re)
+                {
+                    showMessage("RuntimeException while reading csv: "+ re.getMessage());
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    long selectedBookId = -1;
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        outState.putLong("SELECTED_BOOK_ID", selectedBookId);
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        selectedBookId = savedInstanceState.getLong("SELECTED_BOOK_ID");
     }
 
     @Override
@@ -84,6 +132,11 @@ public class BookActivity extends ActionBarActivity {
             case R.id.export_item:
                 exportBook(info.id);
                 break;
+            case R.id.import_item:
+                selectedBookId = info.id;
+                startActivityForResult(new Intent(this, FilePickerActivity.class), REQUEST_PICK_FILE);
+                return true;
+
         }
         return super.onContextItemSelected(item);
     }
