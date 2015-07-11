@@ -134,7 +134,11 @@ public class BookActivity extends ActionBarActivity {
                 break;
             case R.id.import_item:
                 selectedBookId = info.id;
-                startActivityForResult(new Intent(this, FilePickerActivity.class), REQUEST_PICK_FILE);
+                showMessage("Choose csv file");
+                Intent i = new Intent();
+                i.setAction(Intent.ACTION_GET_CONTENT);
+                i.setType("text/csv");
+                startActivityForResult(i, REQUEST_PICK_FILE);
                 return true;
 
         }
