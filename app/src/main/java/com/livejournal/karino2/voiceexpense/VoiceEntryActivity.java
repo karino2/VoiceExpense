@@ -3,12 +3,7 @@ package com.livejournal.karino2.voiceexpense;
 import android.content.Intent;
 import android.database.Cursor;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -35,8 +30,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
     long entryId = -1;
     long prevId = -1;
 
-    SpeechRecognizer recognizer;
-    RecognitionListener recognitionListener;
+    SpeechWatcher watcher;
 
     ArrayList<Command> commandList = new ArrayList<>();
     SpeechParser speechParser;
@@ -69,15 +63,15 @@ public class VoiceEntryActivity extends ActionBarActivity {
 
         setUpCategorySpinner();
 
+        createWatcher();
+
+
         Button btn = (Button)findViewById(R.id.buttonEndVoice);
         btn.setEnabled(false);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(recognizer != null)
-                {
-                    recognizer.stopListening();
-                }
+                watcher.stopListening();
                 setEndVoiceEnabled(false);
             }
         });
@@ -88,7 +82,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
-                    startListeningRaw();
+                    startListening();
                 }
             }
         });
@@ -291,78 +285,37 @@ public class VoiceEntryActivity extends ActionBarActivity {
     }
 
 
-    private void setupSpeechRecognizer() {
-        recognizer = SpeechRecognizer.createSpeechRecognizer(this);
-        recognitionListener = new RecognitionListener() {
+    private void createWatcher() {
+        watcher = new SpeechWatcher(this, new SpeechWatcher.StatusListener() {
             @Override
-            public void onReadyForSpeech(Bundle params) {
+            public void onStartWaitSpeech() {
                 showMessage("OnReady for speech");
-                log("onReady");
-
                 setEndVoiceEnabled(true);
-            }
-
-            @Override
-            public void onBeginningOfSpeech() {
-                log("onBeginning");
 
             }
 
             @Override
-            public void onRmsChanged(float rmsdB) {
-                // Log.d("VoiceExpense", "onRms");
-            }
-
-            @Override
-            public void onBufferReceived(byte[] buffer) {
-                log("onBuf");
-            }
-
-            @Override
-            public void onEndOfSpeech() {
-                log("EndOfSpeech");
-
-            }
-
-            @Override
-            public void onError(int error) {
-                log("onError");
+            public void onWaitSpeechError() {
                 setVoiceButtonChecked(false);
                 setEndVoiceEnabled(false);
-
             }
 
             @Override
-            public void onResults(Bundle results) {
-                ArrayList<String> reses = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-                writeConsole("res: " + reses.toString());
-                String entry = reses.get(0);
+            public void onResult(ArrayList<String> results) {
+                String entry = results.get(0);
                 parseEntry(entry);
-                startListeningRaw();
+                startListening();
             }
-
-            @Override
-            public void onPartialResults(Bundle partialResults) {
-                log("onPartialResults");
-            }
-
-            @Override
-            public void onEvent(int eventType, Bundle params) {
-                log("onEvent");
-            }
-        };
-        recognizer.setRecognitionListener(recognitionListener);
-        Log.d("VoiceExpense", "onSetup");
-
+        });
     }
 
     void log(String msg) {
         Log.d("VoiceExpense", msg);
     }
 
-    private void startListeningRaw() {
+    private void startListening() {
         log("Start listening");
-        recognizer.startListening(RecognizerIntent.getVoiceDetailsIntent(this));
+        watcher.startListening();
     }
 
 
@@ -385,7 +338,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        setupSpeechRecognizer();
+        watcher.setUp();
 
         Sensor sensor = getAccelerometerSensor();
         if(sensor != null) {
@@ -402,12 +355,10 @@ public class VoiceEntryActivity extends ActionBarActivity {
 
     @Override
     protected void onPause() {
-        if(recognizer != null) {
-            recognizer.stopListening();
-            recognizer.destroy();
-            recognizer = null;
-            setVoiceButtonChecked(false);
-        }
+        watcher.tearDown();
+        // TODO: move to listener.
+        setVoiceButtonChecked(false);
+
         if(shakeListener != null) {
             sensorManager.unregisterListener(shakeListener);
             shakeListener = null;
