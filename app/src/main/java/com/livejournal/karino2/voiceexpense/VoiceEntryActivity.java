@@ -95,9 +95,9 @@ public class VoiceEntryActivity extends ActionBarActivity {
     }
 
     private void setupCommandList() {
-        commandList.add(new Command("次"){
+        commandList.add(new Command("ok"){
             public void action() {
-                writeConsole("Action: Next");
+                writeConsole("Action: OK");
                 prevId = save();
                 clearEntry();
             }
