@@ -123,6 +123,9 @@ public class VoiceEntryActivity extends ActionBarActivity {
 
             @Override
             public void actionOther(String token) {
+                if("".equals(token))
+                    return;
+
                 if(isCommand(token)) {
                     findCommand(token).action();
                     return;
