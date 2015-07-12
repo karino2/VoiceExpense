@@ -22,6 +22,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -88,7 +91,9 @@ public class VoiceEntryActivity extends ActionBarActivity {
             loadEntry(entryId);
         }
 
-
+        AdView ad = (AdView)findViewById(R.id.adView);
+        AdRequest r = new AdRequest.Builder().build();
+        ad.loadAd(r);
     }
 
     private void setBookNameToTitle() {

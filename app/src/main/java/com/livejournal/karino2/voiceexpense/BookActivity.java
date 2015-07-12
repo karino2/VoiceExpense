@@ -25,6 +25,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -77,6 +80,11 @@ public class BookActivity extends ActionBarActivity {
                 ensureDefaultDataBase();
             }
         });
+
+
+        AdView ad = (AdView)findViewById(R.id.adView);
+        AdRequest r = new AdRequest.Builder().build();
+        ad.loadAd(r);
 
     }
 

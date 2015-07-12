@@ -16,6 +16,9 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.SimpleCursorAdapter.ViewBinder;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 public class HistoryActivity extends ActionBarActivity {
 
     Database database;
@@ -67,6 +70,11 @@ public class HistoryActivity extends ActionBarActivity {
                 intent.putExtra("EntryID", id);
                 startActivity(intent);
             }});
+
+
+        AdView ad = (AdView)findViewById(R.id.adView);
+        AdRequest r = new AdRequest.Builder().build();
+        ad.loadAd(r);
     }
 
 }
