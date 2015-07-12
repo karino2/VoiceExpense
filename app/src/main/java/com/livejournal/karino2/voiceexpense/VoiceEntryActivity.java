@@ -175,6 +175,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
 
     void showHelp() {
         autoWaitSpeechAgain = false;
+        setVoiceButtonChecked(false);
         showDialog(DIALOG_ID_HELP);
     }
 
