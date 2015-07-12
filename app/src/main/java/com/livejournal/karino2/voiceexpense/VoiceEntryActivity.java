@@ -324,15 +324,13 @@ public class VoiceEntryActivity extends ActionBarActivity {
             @Override
             public void onStartWaitSpeech() {
                 showMessage("OnReady for speech");
-                setEndVoiceEnabled(true);
-                setResourceToVoiceState(R.drawable.voice_ready);
+                setVoiceReadyUI();
             }
 
             @Override
             public void onWaitSpeechError() {
                 setVoiceButtonChecked(false);
-                setEndVoiceEnabled(false);
-                setResourceToVoiceState(R.drawable.voice_not_ready);
+                setVoiceNotReadyUI();
             }
 
             @Override
@@ -342,6 +340,16 @@ public class VoiceEntryActivity extends ActionBarActivity {
                 startListening();
             }
         });
+    }
+
+    private void setVoiceNotReadyUI() {
+        setEndVoiceEnabled(false);
+        setResourceToVoiceState(R.drawable.voice_not_ready);
+    }
+
+    private void setVoiceReadyUI() {
+        setEndVoiceEnabled(true);
+        setResourceToVoiceState(R.drawable.voice_ready);
     }
 
     private void setResourceToVoiceState(int rsid) {
@@ -398,6 +406,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
         watcher.tearDown();
         // TODO: move to listener.
         setVoiceButtonChecked(false);
+        setVoiceNotReadyUI();
 
         if(shakeListener != null) {
             sensorManager.unregisterListener(shakeListener);
