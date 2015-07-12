@@ -14,85 +14,120 @@
         android:layout_alignBottom="@+id/imageViewVoiceState"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
-
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/label_date"
-        android:id="@+id/textView"
+        android:id="@+id/imageViewVoiceState"
+        android:src="@drawable/voice_not_ready"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/toggleButtonVoice"
+        android:layout_toEndOf="@+id/toggleButtonVoice" />
+
+
+
+    <TableLayout
+        android:id="@+id/gridLayoutForm"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/imageViewVoiceState"
-        android:layout_marginTop="5dp" />
+        android:stretchColumns="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_date"
+                android:id="@+id/textView"
+                android:layout_marginTop="5dp" />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextDate"
+                android:text="2015/07/06"
+                android:layout_marginTop="5dp"
+                android:layout_span="2"
+                />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_category"
+                android:id="@+id/textView2"
+            />
+
+            <Spinner android:id="@+id/spinnerCategory"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_span="2"
+                />
+
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_price"
+                android:id="@+id/textView3"
+                />
+
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextPrice"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_money_unit"
+                android:id="@+id/textViewLabelUnit" />
+
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Memo"
+                android:id="@+id/textView5" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextMemo"
+                android:layout_span="2"/>
+
+        </TableRow>
+
+    </TableLayout>
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editTextDate"
-        android:text="2015/07/06"
-        android:layout_below="@+id/imageViewVoiceState"
+        android:id="@+id/editTextConsole"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_toRightOf="@+id/textView2"
-        android:layout_toEndOf="@+id/textView2"
-        android:layout_marginTop="5dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/label_category"
-        android:id="@+id/textView2"
-        android:layout_below="@+id/editTextDate"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Spinner android:id="@+id/spinnerCategory"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/textView2"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_toRightOf="@+id/textView2"
-        android:layout_toEndOf="@+id/textView2"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/label_price"
-        android:id="@+id/textView3"
-        android:layout_below="@+id/spinnerCategory"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editTextPrice"
-        android:layout_below="@+id/spinnerCategory"
-        android:layout_alignLeft="@+id/spinnerCategory"
-        android:layout_alignStart="@+id/spinnerCategory"
-        android:layout_toStartOf="@+id/textView4" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Memo"
-        android:id="@+id/textView5"
-        android:layout_below="@+id/editTextPrice"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editTextMemo"
-        android:layout_below="@+id/editTextPrice"
-        android:layout_alignLeft="@+id/editTextPrice"
-        android:layout_alignStart="@+id/editTextPrice"
-        android:layout_alignRight="@+id/textView4"
-        android:layout_alignEnd="@+id/textView4" />
-
+        android:layout_above="@id/adView"
+        android:layout_below="@+id/gridLayoutForm" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
@@ -103,44 +138,17 @@
         ads:adUnitId="ca-app-pub-1421062854011986/2109129153">
 
     </com.google.android.gms.ads.AdView>
-<!--
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:id="@+id/linearLayoutAds"
-        android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_height="50dp"></LinearLayout>
-        -->
+    <!--
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editTextConsole"
-        android:layout_below="@+id/editTextMemo"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_above="@id/adView"
-     />
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/linearLayoutAds"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_height="50dp"></LinearLayout>
+            -->
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageViewVoiceState"
-        android:src="@drawable/voice_not_ready"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/toggleButtonVoice"
-        android:layout_toEndOf="@+id/toggleButtonVoice" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/label_money_unit"
-        android:id="@+id/textView4"
-        android:layout_below="@+id/textView3"
-        android:layout_alignRight="@+id/spinnerCategory"
-        android:layout_alignEnd="@+id/spinnerCategory" />
 
 
 </RelativeLayout>
