@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.media.Image;
+import android.os.Handler;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -84,7 +84,11 @@ public class VoiceEntryActivity extends ActionBarActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
-                    startListening();
+                    autoWaitSpeechAgain = true;
+                    watcher.startListening();
+                } else {
+                    autoWaitSpeechAgain = false;
+                    watcher.stopListening();
                 }
             }
         });
@@ -123,7 +127,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
                     findCommand(token).action();
                     return;
                 }
-                writeConsole("unknown: " + token);
+                writeConsole("unknown: [" + token + "]");
             }
         });
     }
@@ -317,6 +321,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
 
     }
 
+    boolean autoWaitSpeechAgain = false;
 
     private void createWatcher() {
 
@@ -335,9 +340,11 @@ public class VoiceEntryActivity extends ActionBarActivity {
 
             @Override
             public void onResult(ArrayList<String> results) {
+                setVoiceNotReadyUI();
                 String entry = results.get(0);
                 parseEntry(entry);
-                startListening();
+                if(autoWaitSpeechAgain)
+                    watcher.startListening();
             }
         });
     }
@@ -359,11 +366,6 @@ public class VoiceEntryActivity extends ActionBarActivity {
 
     void log(String msg) {
         Log.d("VoiceExpense", msg);
-    }
-
-    private void startListening() {
-        log("Start listening");
-        watcher.startListening();
     }
 
 
@@ -393,12 +395,20 @@ public class VoiceEntryActivity extends ActionBarActivity {
             shakeListener = new ShakeGestureListener(new ShakeGestureListener.OnShakeListener() {
                 @Override
                 public void onShake() {
-                    setVoiceButtonChecked(true);
+                    if(watcher.isWaitSpeech()) {
+                        watcher.stopListening();
+                    } else {
+                        startListening();
+                    }
                 }
             });
 
             sensorManager.registerListener(shakeListener, sensor, SensorManager.SENSOR_DELAY_UI);
         }
+    }
+
+    private void startListening() {
+        setVoiceButtonChecked(true);
     }
 
     @Override

@@ -26,7 +26,18 @@ public class SpeechWatcher {
     public SpeechWatcher(Context ctx, StatusListener listener) {
         context = ctx;
         statusListener = listener;
+        state = State.INIT;
     }
+
+    enum State {
+        INIT,
+        NOT_LISTENING,
+        WAIT_SPEECH_READY,
+        SPEECH_READY
+    }
+
+    State state;
+
 
     SpeechRecognizer recognizer;
     RecognitionListener recognitionListener;
@@ -38,11 +49,7 @@ public class SpeechWatcher {
             public void onReadyForSpeech(Bundle params) {
                 log("onReady");
                 statusListener.onStartWaitSpeech();
-
-                /*
-                showMessage("OnReady for speech");
-                setEndVoiceEnabled(true);
-                */
+                state = State.SPEECH_READY;
             }
 
             @Override
@@ -70,14 +77,15 @@ public class SpeechWatcher {
             @Override
             public void onError(int error) {
                 log("onError");
+                state = State.NOT_LISTENING;
                 statusListener.onWaitSpeechError();
             }
 
             @Override
             public void onResults(Bundle results) {
+                state = State.NOT_LISTENING;
                 ArrayList<String> reses = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 statusListener.onResult(reses);
-                // startListening();
             }
 
             @Override
@@ -91,6 +99,7 @@ public class SpeechWatcher {
             }
         };
         recognizer.setRecognitionListener(recognitionListener);
+        state = State.NOT_LISTENING;
 
     }
 
@@ -101,6 +110,7 @@ public class SpeechWatcher {
             recognizer = null;
             // setVoiceButtonChecked(false);
         }
+        state = State.INIT;
     }
 
     void log(String msg) {
@@ -108,15 +118,22 @@ public class SpeechWatcher {
     }
 
     public void startListening() {
+        state = State.WAIT_SPEECH_READY;
         recognizer.startListening(RecognizerIntent.getVoiceDetailsIntent(context));
+    }
+
+    public boolean isWaitSpeech() {
+        return state == State.SPEECH_READY ||
+                state == State.WAIT_SPEECH_READY;
     }
 
     // not notify now.
     public void stopListening() {
-        if(recognizer != null)
+        if(isWaitSpeech())
         {
             recognizer.stopListening();
         }
+        state = State.NOT_LISTENING;
     }
 
 }
