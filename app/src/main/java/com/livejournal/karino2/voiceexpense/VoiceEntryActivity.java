@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Paint;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -19,6 +20,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -91,9 +93,27 @@ public class VoiceEntryActivity extends ActionBarActivity {
             loadEntry(entryId);
         }
 
+        setMemoEnabled(false);
+
         AdView ad = (AdView)findViewById(R.id.adView);
         AdRequest r = new AdRequest.Builder().build();
         ad.loadAd(r);
+    }
+
+    private void setMemoEnabled(boolean enabled) {
+        memoMode = enabled;
+        /*
+        EditText et = (EditText)findViewById(R.id.editTextMemo);
+        et.setEnabled(enabled);
+        */
+        TextView tv = (TextView)findViewById(R.id.textViewMemo);
+        int flags = tv.getPaintFlags();
+        if(enabled) {
+            flags &= ~Paint.STRIKE_THRU_TEXT_FLAG;
+        } else {
+            flags |= Paint.STRIKE_THRU_TEXT_FLAG;
+        }
+        tv.setPaintFlags(flags);
     }
 
     private void setBookNameToTitle() {
@@ -173,7 +193,8 @@ public class VoiceEntryActivity extends ActionBarActivity {
             // TODO: show highlight
             @Override
             public void action() {
-                memoMode = true;
+                setMemoEnabled(true);
+                showMessage("Memo input mode");
             }
         });
         commandList.add(new Command("ヘルプ"){
@@ -247,7 +268,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
     void parseEntry(String entry) {
         if(memoMode) {
             setTextTo(R.id.editTextMemo, entry);
-            memoMode = false;
+            setMemoEnabled(false);
             return;
         }
         speechParser.parseEntry(entry);
@@ -359,13 +380,13 @@ public class VoiceEntryActivity extends ActionBarActivity {
         watcher = new SpeechWatcher(this, new SpeechWatcher.StatusListener() {
             @Override
             public void onStartWaitSpeech() {
-                showMessage("OnReady for speech");
                 notifyVoiceReady();
             }
 
             @Override
             public void onWaitSpeechError() {
                 setVoiceButtonChecked(false);
+                setMemoEnabled(false);
                 notifyVoiceNotReady();
             }
 
@@ -445,6 +466,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
         watcher.tearDown();
         // TODO: move to listener.
         setVoiceButtonChecked(false);
+        setMemoEnabled(false);
         notifyVoiceNotReady();
 
         if(shakeListener != null) {
