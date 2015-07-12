@@ -20,4 +20,7 @@
     <string name="label_date">日付</string>
     <string name="label_category">種類</string>
     <string name="label_price">料金</string>
+    <string name="label_menu_history">履歴</string>
+    <string name="label_menu_category">種類</string>
+    <string name="label_menu_help">ヘルプ</string>
 </resources>
