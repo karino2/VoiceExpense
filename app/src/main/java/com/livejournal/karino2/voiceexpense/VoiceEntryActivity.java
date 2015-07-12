@@ -122,10 +122,11 @@ public class VoiceEntryActivity extends ActionBarActivity {
                     return;
                 }
                 writeConsole("unknown: " + token);
-                setTextTo(R.id.editTextMemo, token);
             }
         });
     }
+
+    boolean memoMode = false;
 
     private void setupCommandList() {
         commandList.add(new Command("ok"){
@@ -155,6 +156,13 @@ public class VoiceEntryActivity extends ActionBarActivity {
             @Override
             public void action() {
                 setTextTo(R.id.editTextMemo, "");
+            }
+        });
+        commandList.add(new Command("メモ"){
+            // TODO: show highlight
+            @Override
+            public void action() {
+                memoMode = true;
             }
         });
     }
@@ -197,6 +205,11 @@ public class VoiceEntryActivity extends ActionBarActivity {
     }
 
     void parseEntry(String entry) {
+        if(memoMode) {
+            setTextTo(R.id.editTextMemo, entry);
+            memoMode = false;
+            return;
+        }
         speechParser.parseEntry(entry);
     }
 
