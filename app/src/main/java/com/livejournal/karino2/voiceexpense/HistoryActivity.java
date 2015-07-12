@@ -67,7 +67,6 @@ public class HistoryActivity extends ActionBarActivity {
                 intent.putExtra("EntryID", id);
                 startActivity(intent);
             }});
-
     }
 
 }
