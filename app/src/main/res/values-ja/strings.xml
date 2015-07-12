@@ -23,4 +23,5 @@
     <string name="label_menu_history">履歴</string>
     <string name="label_menu_category">種類</string>
     <string name="label_menu_help">ヘルプ</string>
+    <string name="label_memo">メモ</string>
 </resources>

@@ -23,4 +23,5 @@
     <string name="label_menu_history">History</string>
     <string name="label_menu_category">Category</string>
     <string name="label_menu_help">Help</string>
+    <string name="label_memo">Memo</string>
 </resources>
