@@ -131,7 +131,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
     boolean memoMode = false;
 
     private void setupCommandList() {
-        commandList.add(new Command("ok"){
+        commandList.add(new Command(new String[]{"ok", "次"}){
             public void action() {
                 writeConsole("Action: OK");
                 prevId = save();
@@ -143,6 +143,8 @@ public class VoiceEntryActivity extends ActionBarActivity {
                 }
             }
         });
+        // TODO.
+        /*
         commandList.add(new Command("前"){
             public void action() {
                 writeConsole("Action: Prev");
@@ -153,6 +155,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
                 loadEntry(prevId);
             }
         });
+        */
         commandList.add(new Command("クリアメモ"){
 
             @Override
