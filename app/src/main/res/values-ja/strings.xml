@@ -16,4 +16,8 @@
     <string name="title_activity_category">カテゴリ</string>
     <string name="title_activity_voice_entry">声で入力</string>
     <string name="rename_label">Rename</string>
+    <string name="label_money_unit">円</string>
+    <string name="label_date">日付</string>
+    <string name="label_category">種類</string>
+    <string name="label_price">料金</string>
 </resources>

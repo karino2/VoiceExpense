@@ -18,7 +18,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Date"
+        android:text="@string/label_date"
         android:id="@+id/textView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -40,7 +40,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Category"
+        android:text="@string/label_category"
         android:id="@+id/textView2"
         android:layout_below="@+id/editTextDate"
         android:layout_alignParentLeft="true"
@@ -59,7 +59,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Price"
+        android:text="@string/label_price"
         android:id="@+id/textView3"
         android:layout_below="@+id/spinnerCategory"
         android:layout_alignParentLeft="true"
@@ -70,10 +70,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/editTextPrice"
         android:layout_below="@+id/spinnerCategory"
-        android:layout_alignRight="@+id/spinnerCategory"
-        android:layout_alignEnd="@+id/spinnerCategory"
         android:layout_alignLeft="@+id/spinnerCategory"
-        android:layout_alignStart="@+id/spinnerCategory" />
+        android:layout_alignStart="@+id/spinnerCategory"
+        android:layout_toStartOf="@+id/textView4" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -91,8 +90,8 @@
         android:layout_below="@+id/editTextPrice"
         android:layout_alignLeft="@+id/editTextPrice"
         android:layout_alignStart="@+id/editTextPrice"
-        android:layout_alignRight="@+id/editTextPrice"
-        android:layout_alignEnd="@+id/editTextPrice" />
+        android:layout_alignRight="@+id/textView4"
+        android:layout_alignEnd="@+id/textView4" />
 
 
     <com.google.android.gms.ads.AdView
@@ -133,6 +132,15 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/toggleButtonVoice"
         android:layout_toEndOf="@+id/toggleButtonVoice" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_money_unit"
+        android:id="@+id/textView4"
+        android:layout_below="@+id/textView3"
+        android:layout_alignRight="@+id/spinnerCategory"
+        android:layout_alignEnd="@+id/spinnerCategory" />
 
 
 </RelativeLayout>
