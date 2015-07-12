@@ -383,7 +383,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
     }
 
     void log(String msg) {
-        Log.d("VoiceExpense", msg);
+        // Log.d("VoiceExpense", msg);
     }
 
 

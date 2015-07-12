@@ -114,7 +114,7 @@ public class SpeechWatcher {
     }
 
     void log(String msg) {
-        Log.d("VoiceExpense", msg);
+        // Log.d("VoiceExpense", msg);
     }
 
     public void startListening() {
