@@ -105,21 +105,13 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/label_end_voice"
-        android:id="@+id/buttonEndVoice"
-        android:layout_alignBottom="@+id/imageViewVoiceState"
-        android:layout_alignRight="@+id/editTextDate"
-        android:layout_alignEnd="@+id/editTextDate" />
-
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageViewVoiceState"
+        android:src="@drawable/voice_not_ready"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/voice_not_ready" />
+        android:layout_toRightOf="@+id/toggleButtonVoice"
+        android:layout_toEndOf="@+id/toggleButtonVoice" />
 
 </RelativeLayout>

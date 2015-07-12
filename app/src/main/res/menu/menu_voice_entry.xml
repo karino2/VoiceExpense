@@ -4,5 +4,5 @@
     tools:context="com.livejournal.karino2.voiceexpense.VoiceEntryActivity">
     <item android:id="@+id/menu_history_item" android:title="History" app:showAsAction="always"></item>
     <item android:id="@+id/menu_category_item" android:title="Category" app:showAsAction="ifRoom"></item>
-    <item android:id="@+id/menu_import_item" android:title="@string/import_menu_label"></item>
+    <item android:id="@+id/menu_help_item" android:title="Help" app:showAsAction="ifRoom"></item>
 </menu>

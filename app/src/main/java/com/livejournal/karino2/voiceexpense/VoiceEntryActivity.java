@@ -1,17 +1,19 @@
 package com.livejournal.karino2.voiceexpense;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.os.Handler;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -27,6 +29,9 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class VoiceEntryActivity extends ActionBarActivity {
+
+    final int DIALOG_ID_HELP = 1;
+
     Database database;
     long bookId;
     long entryId = -1;
@@ -39,11 +44,6 @@ public class VoiceEntryActivity extends ActionBarActivity {
     Hashtable<Long, String> categoriesMap;
 
     SensorManager sensorManager;
-
-    void setEndVoiceEnabled(boolean enabled) {
-        Button btn = (Button)findViewById(R.id.buttonEndVoice);
-        btn.setEnabled(enabled);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,18 +66,6 @@ public class VoiceEntryActivity extends ActionBarActivity {
         setUpCategorySpinner();
 
         createWatcher();
-
-
-        Button btn = (Button)findViewById(R.id.buttonEndVoice);
-        btn.setEnabled(false);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                watcher.stopListening();
-                setEndVoiceEnabled(false);
-            }
-        });
-
 
         ToggleButton tb = findToggleVoiceButton();
         tb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -177,8 +165,36 @@ public class VoiceEntryActivity extends ActionBarActivity {
                 memoMode = true;
             }
         });
+        commandList.add(new Command("ヘルプ"){
+            @Override
+            public void action() {
+                showHelp();
+            }
+        });
     }
 
+    void showHelp() {
+        autoWaitSpeechAgain = false;
+        showDialog(DIALOG_ID_HELP);
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch(id) {
+            case DIALOG_ID_HELP:
+                final WebView webView = new WebView(this);
+                webView.loadUrl("file:///android_asset/help_voice.html");
+                return new AlertDialog.Builder(this).setTitle("Help")
+                        .setView(webView)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(final DialogInterface dialog, final int whichButton) {
+                                dialog.dismiss();
+                            }
+                        }).create();
+
+        }
+        return super.onCreateDialog(id);
+    }
 
     Spinner getCategorySpinner() {
         Spinner spinner = (Spinner)findViewById(R.id.spinnerCategory);
@@ -332,18 +348,18 @@ public class VoiceEntryActivity extends ActionBarActivity {
             @Override
             public void onStartWaitSpeech() {
                 showMessage("OnReady for speech");
-                setVoiceReadyUI();
+                notifyVoiceReady();
             }
 
             @Override
             public void onWaitSpeechError() {
                 setVoiceButtonChecked(false);
-                setVoiceNotReadyUI();
+                notifyVoiceNotReady();
             }
 
             @Override
             public void onResult(ArrayList<String> results) {
-                setVoiceNotReadyUI();
+                notifyVoiceNotReady();
                 String entry = results.get(0);
                 parseEntry(entry);
                 if(autoWaitSpeechAgain)
@@ -352,13 +368,11 @@ public class VoiceEntryActivity extends ActionBarActivity {
         });
     }
 
-    private void setVoiceNotReadyUI() {
-        setEndVoiceEnabled(false);
+    private void notifyVoiceNotReady() {
         setResourceToVoiceState(R.drawable.voice_not_ready);
     }
 
-    private void setVoiceReadyUI() {
-        setEndVoiceEnabled(true);
+    private void notifyVoiceReady() {
         setResourceToVoiceState(R.drawable.voice_ready);
     }
 
@@ -419,7 +433,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
         watcher.tearDown();
         // TODO: move to listener.
         setVoiceButtonChecked(false);
-        setVoiceNotReadyUI();
+        notifyVoiceNotReady();
 
         if(shakeListener != null) {
             sensorManager.unregisterListener(shakeListener);
@@ -445,8 +459,8 @@ public class VoiceEntryActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         switch(id) {
-            case R.id.menu_import_item:
-                showMessage("NYI");
+            case R.id.menu_help_item:
+                showHelp();
                 return true;
             case R.id.menu_category_item:
                 startActivity(new Intent(this, CategoryActivity.class));
