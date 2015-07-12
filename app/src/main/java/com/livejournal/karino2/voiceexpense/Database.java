@@ -156,6 +156,19 @@ public class Database {
 		database.update(BOOK_TABLE_NAME, values, "_id = ?", new String[] { String.valueOf(bookId) } );
 	}
 
+	public String findBookName(long bookId) {
+		String ret = "";
+		Cursor cursor = database.query(true, BOOK_TABLE_NAME,
+				new String[]{"_id", "NAME"}, "_id = ?", new String[] { String.valueOf(bookId) }, null, null, null, null);
+		if(cursor.moveToFirst())
+		{
+			ret = cursor.getString(1);
+		}
+		cursor.close();
+		return ret;
+
+	}
+
 
 	long insertNewName(String name, String tableName) {
 		ContentValues values = new ContentValues();

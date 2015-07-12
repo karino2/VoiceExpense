@@ -56,6 +56,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
         database.open(this);
 
         bookId = EntryActivity.getBookId(this);
+        setBookNameToTitle();
 
         setupCommandList();
 
@@ -88,6 +89,11 @@ public class VoiceEntryActivity extends ActionBarActivity {
         }
 
 
+    }
+
+    private void setBookNameToTitle() {
+        String bookName = database.findBookName(bookId);
+        setTitle(bookName);
     }
 
     private void setupSpeechParser() {
