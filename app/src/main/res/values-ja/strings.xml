@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">声で経費入力</string>
+    <string name="save_button_label">保存</string>
+    <string name="import_menu_label">インポート</string>
+    <string name="menu_new_book_label">新規ブック</string>
+    <string name="delete_label">削除</string>
+    <string name="delete_all_label">全て削除</string>
+    <string name="export_label">エクスポート</string>
+
+
+    <string name="title_activity_entry">入力</string>
+    <string name="title_activity_history">履歴</string>
+    <string name="title_activity_category">カテゴリ</string>
+    <string name="title_activity_voice_entry">声で入力</string>
+    <string name="rename_label">Rename</string>
+</resources>
