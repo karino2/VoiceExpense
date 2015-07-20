@@ -201,6 +201,12 @@ public class VoiceEntryActivity extends ActionBarActivity {
                 showHelp();
             }
         });
+        commandList.add(new Command(new String[] {"一覧", "一蘭"}){
+            @Override
+            public void action() {
+                startHistoryActivity();
+            }
+        });
     }
 
     void showHelp() {
@@ -498,9 +504,13 @@ public class VoiceEntryActivity extends ActionBarActivity {
                 startActivity(new Intent(this, CategoryActivity.class));
                 return true;
             case R.id.menu_history_item:
-                startActivity(new Intent(this, HistoryActivity.class));
+                startHistoryActivity();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startHistoryActivity() {
+        startActivity(new Intent(this, HistoryActivity.class));
     }
 }
