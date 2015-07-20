@@ -67,8 +67,7 @@ public class BookActivity extends ActionBarActivity {
                 EntryActivity.saveBookId(BookActivity.this, bookId);
 
                 // Intent intent = new Intent(BookActivity.this, EntryActivity.class);
-                Intent intent = new Intent(BookActivity.this, VoiceEntryActivity.class);
-                startActivity(intent);
+                startVoiceEntryActivity();
             }
         });
 
@@ -86,6 +85,19 @@ public class BookActivity extends ActionBarActivity {
         AdRequest r = new AdRequest.Builder().build();
         ad.loadAd(r);
 
+        if(savedInstanceState == null) {
+
+            long selectedId = EntryActivity.getBookId(this);
+            if (selectedId != -1) {
+                startVoiceEntryActivity();
+            }
+        }
+
+    }
+
+    private void startVoiceEntryActivity() {
+        Intent intent = new Intent(BookActivity.this, VoiceEntryActivity.class);
+        startActivity(intent);
     }
 
     Handler handler = new Handler();
