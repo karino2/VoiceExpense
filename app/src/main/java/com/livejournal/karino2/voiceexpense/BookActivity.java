@@ -2,8 +2,10 @@ package com.livejournal.karino2.voiceexpense;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
@@ -64,9 +66,8 @@ public class BookActivity extends ActionBarActivity {
                                     long arg3) {
                 final Cursor c = (Cursor) parent.getItemAtPosition(position);
                 long bookId = c.getLong(0);
-                EntryActivity.saveBookId(BookActivity.this, bookId);
+                saveBookId(BookActivity.this, bookId);
 
-                // Intent intent = new Intent(BookActivity.this, EntryActivity.class);
                 startVoiceEntryActivity();
             }
         });
@@ -87,7 +88,7 @@ public class BookActivity extends ActionBarActivity {
 
         if(savedInstanceState == null) {
 
-            long selectedId = EntryActivity.getBookId(this);
+            long selectedId = getBookId(this);
             if (selectedId != -1) {
                 startVoiceEntryActivity();
             }
@@ -110,6 +111,20 @@ public class BookActivity extends ActionBarActivity {
         }
     }
 
+    static final String BOOK_ID_KEY = "book_id";
+    public static void saveBookId(ContextWrapper cw, long bookId)
+    {
+        SharedPreferences prefs = cw.getSharedPreferences("Book", MODE_PRIVATE);
+        SharedPreferences.Editor ed = prefs.edit();
+        ed.putLong(BOOK_ID_KEY, bookId);
+        ed.commit();
+    }
+
+    public static long getBookId(ContextWrapper cw)
+    {
+        SharedPreferences prefs = cw.getSharedPreferences("Book", MODE_PRIVATE);
+        return prefs.getLong(BOOK_ID_KEY, -1);
+    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,

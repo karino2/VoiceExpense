@@ -11,11 +11,9 @@ import android.hardware.SensorManager;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -60,7 +58,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
         database = new Database();
         database.open(this);
 
-        bookId = EntryActivity.getBookId(this);
+        bookId = BookActivity.getBookId(this);
         setBookNameToTitle();
 
         setupCommandList();

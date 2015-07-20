@@ -36,7 +36,7 @@ public class HistoryActivity extends ActionBarActivity {
         categoryMap = database.fetchCategories();
 
 
-        long bookId = EntryActivity.getBookId(this);
+        long bookId = BookActivity.getBookId(this);
 
         Cursor cursor = database.fetchAllEntry(bookId);
         startManagingCursor(cursor);

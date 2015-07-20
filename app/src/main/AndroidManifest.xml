@@ -25,14 +25,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".EntryActivity"
-            android:label="@string/title_activity_entry" >
-        </activity>
-        <activity
-            android:name=".FilePickerActivity"
-            android:label="@string/title_activity_file_picker" >
-        </activity>
-        <activity
             android:name=".HistoryActivity"
             android:label="@string/title_activity_history" >
         </activity>

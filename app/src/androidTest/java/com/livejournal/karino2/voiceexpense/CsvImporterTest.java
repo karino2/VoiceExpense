@@ -99,24 +99,7 @@ public class CsvImporterTest extends TestCase {
 		Date expect = new Date(expectedYear-1900, expectedMonth-1, expectedDay);
 		return expect;
 	}
-	
-	// EntryActivityTest
-	public void test_nextDate_endOfMonth()
-	{
-		Date dt = createDate(2011, 11, 30);
-		Date next = EntryActivity.DateUtility.nextDate(dt);
-		
-		assertEqualsDate(2011,12,1, next);		
-	}
-	
-	public void test_prevDate_beginningOfMonth()
-	{
-		Date dt = createDate(2011, 11, 1);
-		Date prev = EntryActivity.DateUtility.prevDate(dt);
-		
-		assertEqualsDate(2011,10,31, prev);		
-	}
-	
+
 	public void test_beforeDate()
 	{
 		Date input = createDate(2011, 11, 4);
