@@ -449,6 +449,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
             shakeListener = new ShakeGestureListener(new ShakeGestureListener.OnShakeListener() {
                 @Override
                 public void onShake() {
+                    writeConsole("Shake!");
                     if(watcher.isWaitSpeech()) {
                         watcher.stopListening();
                     } else {
