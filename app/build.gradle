@@ -8,8 +8,8 @@ android {
         applicationId "com.livejournal.karino2.voiceexpense"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 4
-        versionName "0.4"
+        versionCode 5
+        versionName "0.5"
     }
     buildTypes {
         release {
