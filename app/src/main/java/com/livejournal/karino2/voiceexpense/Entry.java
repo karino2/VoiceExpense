@@ -10,15 +10,16 @@ import java.util.Hashtable;
 	*/
 	public Entry(Date date, long category, String memo, int price, long book)
 	{
-		this(-1, date, category, memo, price, book);
+		this(-1, date, category, memo, price, -1, book);
 	}	
-	public Entry(long id, Date date, long category, String memo, int price, long book)
+	public Entry(long id, Date date, long category, String memo, int price, long updateDate, long book)
 	{
 		this.id = id;
 		this.date = date;
 		this.categoryId = category;
 		this.memo = memo;
 		this.price = price;
+		this.updateDate = updateDate;
 		this.bookId = book;
 	}
 	
@@ -60,10 +61,13 @@ import java.util.Hashtable;
 		return bookId;
 	}
 
+	public long getUpdateDate() { return updateDate; }
+
 	private long id;
 	private Date date;
 	private long categoryId;
 	private String memo;
 	private int price;
 	private long bookId;
+	private long updateDate;
 }

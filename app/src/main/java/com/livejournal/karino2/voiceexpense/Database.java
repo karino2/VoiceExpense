@@ -200,7 +200,7 @@ public class Database {
 		values.put("MEMO", entry.getMemo());
 		values.put("PRICE", entry.getPrice());
 		values.put("BOOK", entry.getBookId());
-        values.put("UPDATEDATE",  ((new Date()).getTime()));
+        values.put("UPDATEDATE", ((new Date()).getTime()));
 	}
 	
 
@@ -227,8 +227,39 @@ public class Database {
 		database.delete(BOOK_TABLE_NAME, "_id = ?", new String[] { String.valueOf(id)} );		
 	}
 
+	long lastEntryIdByUpdateDate(long bookId) {
+		long ret = -1;
+		Cursor cursor = database.query(ENTRY_TABLE_NAME, new String[]{"_id", "MAX(UPDATEDATE)"}, "BOOK = ?", new String[]{ String.valueOf(bookId)}, null, null, null);
+		if(cursor.moveToFirst())
+		{
+			ret = cursor.getLong(0);
+		}
+		cursor.close();
+		return ret;
+
+	}
+
+	public long queryPrevEntry(long bookId, long baseEntryId) {
+		long resultId = -1;
+		if(baseEntryId == -1) {
+			return lastEntryIdByUpdateDate(bookId);
+		}
+		Entry curEnt = fetchEntry(bookId, baseEntryId);
+		Cursor cursor = database.query(ENTRY_TABLE_NAME, new String[]{"_id",  "DATE", "CATEGORY", "MEMO", "PRICE", "UPDATEDATE" },
+				"BOOK = ? AND UPDATEDATE < ?",
+				new String[] {
+						String.valueOf(bookId),
+						String.valueOf(curEnt.getUpdateDate()) }, null, null, "UPDATEDATE DESC, _id DESC");
+		if(cursor.moveToFirst()) {
+			resultId = cursor.getLong(0);
+		}
+		cursor.close();
+		return resultId;
+	}
+
+
 	public Entry fetchEntry(long bookId, long entryId) {
-		Cursor cursor = database.query(ENTRY_TABLE_NAME, new String[]{"_id",  "DATE", "CATEGORY", "MEMO", "PRICE" },
+		Cursor cursor = database.query(ENTRY_TABLE_NAME, new String[]{"_id",  "DATE", "CATEGORY", "MEMO", "PRICE", "UPDATEDATE" },
 				"_id = ?", new String[] { String.valueOf(entryId) }, null, null, null);
 		cursor.moveToFirst();
 		Entry ent = new Entry(cursor.getLong(0),
@@ -236,6 +267,7 @@ public class Database {
 				cursor.getLong(2),
 				cursor.getString(3),
 				cursor.getInt(4),
+				cursor.getLong(5),
 				bookId);
 		cursor.close();
 		return ent;

@@ -38,7 +38,6 @@ public class VoiceEntryActivity extends ActionBarActivity {
     Database database;
     long bookId;
     long entryId = -1;
-    long prevId = -1;
 
     SpeechWatcher watcher;
 
@@ -158,7 +157,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
         commandList.add(new Command(new String[]{"ok", "次"}){
             public void action() {
                 writeConsole("Action: OK");
-                prevId = save();
+                save();
                 if(isEditMode()) {
                     // back to HistoryActivity.
                     finish();
@@ -167,19 +166,18 @@ public class VoiceEntryActivity extends ActionBarActivity {
                 }
             }
         });
-        // TODO.
-        /*
         commandList.add(new Command("前"){
             public void action() {
                 writeConsole("Action: Prev");
-                if(prevId == -1) {
-                    showMessage("NYI for this case. Ignore for a while.");
+                long newIdCand = database.queryPrevEntry(bookId, entryId);
+                if(newIdCand == -1) {
+                    showMessage("This is the top entry.");
                     return;
                 }
-                loadEntry(prevId);
+                entryId = newIdCand;
+                loadEntry(entryId);
             }
         });
-        */
         commandList.add(new Command("クリアメモ"){
 
             @Override
@@ -319,7 +317,8 @@ public class VoiceEntryActivity extends ActionBarActivity {
         int price = Integer.valueOf(getETText(R.id.editTextPrice));
         String memo = getETText(R.id.editTextMemo);
 
-        return new Entry(entryId, date, category, memo, price, bookId);
+        // do not use updateDate this case.
+        return new Entry(entryId, date, category, memo, price, -1, bookId);
     }
 
     Date getDate() {
@@ -372,7 +371,6 @@ public class VoiceEntryActivity extends ActionBarActivity {
         setTextTo(R.id.editTextPrice, String.valueOf(ent.getPrice()));
         setTextTo(R.id.editTextMemo, ent.getMemo());
 
-        prevId = entryId;
         entryId = ent.getId();
 
     }
