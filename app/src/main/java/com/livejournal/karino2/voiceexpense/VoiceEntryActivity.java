@@ -74,6 +74,10 @@ public class VoiceEntryActivity extends ActionBarActivity {
         tb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(ignoreOnce) {
+                    ignoreOnce = false;
+                    return;
+                }
                 if(isChecked) {
                     autoWaitSpeechAgain = true;
                     watcher.startListening();
@@ -250,8 +254,20 @@ public class VoiceEntryActivity extends ActionBarActivity {
     }
 
     private void setVoiceButtonChecked(boolean enabled) {
+        ignoreOnce = false;
+        setVoiceButtonCheckedInternal(enabled);
+    }
+
+    private void setVoiceButtonCheckedInternal(boolean enabled) {
         ToggleButton tb = findToggleVoiceButton();
         tb.setChecked(enabled);
+    }
+
+    boolean ignoreOnce = false;
+    private void setVoiceButtonCheckedWithoutAction(boolean enabled) {
+        ignoreOnce = true;
+        setVoiceButtonCheckedInternal(enabled);
+
     }
 
     private ToggleButton findToggleVoiceButton() {
@@ -469,8 +485,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         watcher.tearDown();
-        // TODO: move to listener.
-        setVoiceButtonChecked(false);
+        setVoiceButtonCheckedWithoutAction(false);
         setMemoEnabled(false);
         notifyVoiceNotReady();
 
