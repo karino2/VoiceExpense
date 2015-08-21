@@ -88,6 +88,8 @@ public class VoiceEntryActivity extends ActionBarActivity {
         if(entryId != -1)
         {
             loadEntry(entryId);
+        } else {
+            setDate(new Date());
         }
 
         setMemoEnabled(false);
