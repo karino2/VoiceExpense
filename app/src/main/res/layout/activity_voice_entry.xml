@@ -130,14 +130,23 @@
         android:layout_below="@+id/gridLayoutForm" />
 
     <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
         android:layout_width="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_height="wrap_content"
+        android:id="@id/adView"
         ads:adSize="SMART_BANNER"
         ads:adUnitId="ca-app-pub-1421062854011986/2109129153">
 
     </com.google.android.gms.ads.AdView>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bulk"
+        android:id="@+id/checkBoxIsBulk"
+        android:layout_alignTop="@+id/toggleButtonVoice"
+        android:layout_toRightOf="@+id/imageViewVoiceState"
+        android:layout_toEndOf="@+id/imageViewVoiceState" />
 
     <!--
 

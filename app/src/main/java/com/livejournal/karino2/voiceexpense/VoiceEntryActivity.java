@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -345,11 +346,17 @@ public class VoiceEntryActivity extends ActionBarActivity {
         return date;
     }
 
+    boolean isBulk() {
+        return ((CheckBox)findViewById(R.id.checkBoxIsBulk)).isChecked();
+    }
 
     void clearEntry() {
         setTextTo(R.id.editTextPrice, "0");
         setTextTo(R.id.editTextMemo, "");
-        getCategorySpinner().setSelection(0);
+
+        if(!isBulk())
+            getCategorySpinner().setSelection(0);
+
         // do not clear date.
         entryId = -1;
     }
