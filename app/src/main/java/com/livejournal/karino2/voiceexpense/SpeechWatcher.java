@@ -2,6 +2,7 @@ package com.livejournal.karino2.voiceexpense;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -117,9 +118,26 @@ public class SpeechWatcher {
         // Log.d("VoiceExpense", msg);
     }
 
+    Handler handler = new Handler();
+    boolean startRegistered = false;
+
+
     public void startListening() {
+        startRegistered = true;
         state = State.WAIT_SPEECH_READY;
-        recognizer.startListening(RecognizerIntent.getVoiceDetailsIntent(context));
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(startRegistered) {
+                    state = State.WAIT_SPEECH_READY;
+                    recognizer.startListening(RecognizerIntent.getVoiceDetailsIntent(context));
+                }
+                startRegistered = false;
+
+            }
+        }, 500);
+
     }
 
     public boolean isWaitSpeech() {
