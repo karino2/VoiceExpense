@@ -291,6 +291,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
             setMemoEnabled(false);
             return;
         }
+        speechParser.setBaseDate(getDate());
         speechParser.parseEntry(entry);
     }
 

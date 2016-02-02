@@ -26,6 +26,10 @@ public class SpeechParser {
         actionListener.actionOther(otherBuf.toString());
     }
 
+    public void setBaseDate(Date baseDate) {
+        wordAnalyzer.setBaseDate(baseDate);
+    }
+
     public interface OnActionListener {
         void actionDate(Date dt);
         void actionPrice(int price);

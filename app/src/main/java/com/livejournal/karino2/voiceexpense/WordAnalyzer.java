@@ -102,4 +102,8 @@ public class WordAnalyzer {
     public ArrayList<String> tokenize(String fullEntry) {
         return new ArrayList<>(Arrays.asList(fullEntry.split(" ")));
     }
+
+    public void setBaseDate(Date baseDate) {
+        this.baseDate = baseDate;
+    }
 }
