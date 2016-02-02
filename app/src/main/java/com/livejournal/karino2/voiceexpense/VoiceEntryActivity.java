@@ -425,6 +425,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
 
             @Override
             public void onWaitSpeechError() {
+                writeConsole("On Speech Error.");
                 setVoiceButtonChecked(false);
                 setMemoEnabled(false);
                 notifyVoiceNotReady();
