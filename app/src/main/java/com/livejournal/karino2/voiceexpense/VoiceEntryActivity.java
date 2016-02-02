@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -86,6 +87,13 @@ public class VoiceEntryActivity extends ActionBarActivity {
                     autoWaitSpeechAgain = false;
                     watcher.stopListening();
                 }
+            }
+        });
+
+        findViewById(R.id.buttonEnter).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actionOK();
             }
         });
 
@@ -163,14 +171,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
     private void setupCommandList() {
         commandList.add(new Command(new String[]{"ok", "次"}){
             public void action() {
-                writeConsole("Action: OK");
-                save();
-                if(isEditMode()) {
-                    // back to HistoryActivity.
-                    finish();
-                } else {
-                    clearEntry();
-                }
+                actionOK();
             }
         });
         commandList.add(new Command("前"){
@@ -212,6 +213,17 @@ public class VoiceEntryActivity extends ActionBarActivity {
                 startHistoryActivity();
             }
         });
+    }
+
+    private void actionOK() {
+        writeConsole("Action: OK");
+        save();
+        if(isEditMode()) {
+            // back to HistoryActivity.
+            finish();
+        } else {
+            clearEntry();
+        }
     }
 
     void showHelp() {

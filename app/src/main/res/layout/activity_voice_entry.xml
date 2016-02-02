@@ -148,6 +148,15 @@
         android:layout_toRightOf="@+id/imageViewVoiceState"
         android:layout_toEndOf="@+id/imageViewVoiceState" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ENTER"
+        android:id="@+id/buttonEnter"
+        android:layout_alignTop="@+id/checkBoxIsBulk"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
     <!--
 
         <LinearLayout
