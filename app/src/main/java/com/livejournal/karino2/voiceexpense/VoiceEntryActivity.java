@@ -453,7 +453,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
                 notifyVoiceNotReady();
                 String entry = results.get(0);
                 parseEntry(entry);
-                if(autoWaitSpeechAgain)
+                if(autoWaitSpeechAgain && !isFinishing())
                     watcher.startListening();
             }
         });
