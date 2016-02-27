@@ -136,7 +136,7 @@ public class SpeechWatcher {
                 startRegistered = false;
 
             }
-        }, 500);
+        }, 800);
 
     }
 
