@@ -76,8 +76,8 @@ public class WordAnalyzerTest extends TestCase {
     }
 
     public void testToDate() {
-        assertDateEqual(baseDate.getYear(), 7-1, 8, target.toDate("7月8日"));
-        assertDateEqual(2013-1900, 7-1, 8, target.toDate("2013年7月8日"));
+        assertDateEqual(baseDate.getYear(), 7 - 1, 8, target.toDate("7月8日"));
+        assertDateEqual(2013 - 1900, 7 - 1, 8, target.toDate("2013年7月8日"));
     }
 
     public void testToDate_Remaining() {
@@ -93,6 +93,21 @@ public class WordAnalyzerTest extends TestCase {
         assertTrue(target.isPrice(input));
         assertEquals(120, target.toPrice(input));
         assertEquals("7月8日", input.substring(target.remainingPos()));
+    }
+
+    public void testIsSubtract_match() {
+        assertTrue(target.isSubtract("ひく"));
+        assertTrue(target.isSubtract("マイナス"));
+        assertTrue(target.isSubtract("-"));
+        assertFalse(target.isSubtract("200円"));
+    }
+
+    public void testIsSubtract_Remaining(){
+        String input = "ひく250円";
+        String expect = "250円";
+
+        assertTrue(target.isSubtract(input));
+        assertEquals(expect, input.substring(target.subtractRemainingPos(input)));
     }
 
     public void assertDateEqual(int year, int month, int day, Date dt) {

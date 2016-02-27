@@ -34,6 +34,7 @@ public class SpeechParser {
         void actionDate(Date dt);
         void actionPrice(int price);
         void actionCategory(String categoryName);
+        void actionSubtractMode();
         void actionOther(String other);
     }
 
@@ -50,6 +51,10 @@ public class SpeechParser {
                 String cat = wordAnalyzer.findCategory(token);
                 actionListener.actionCategory(cat);
                 token = token.substring(cat.length());
+            } else if (wordAnalyzer.isSubtract(token)) {
+                actionListener.actionSubtractMode();
+
+                token = token.substring(wordAnalyzer.subtractRemainingPos(token));
             } else {
                 if(otherBuf.length() != 0) {
                     otherBuf.append(" ");

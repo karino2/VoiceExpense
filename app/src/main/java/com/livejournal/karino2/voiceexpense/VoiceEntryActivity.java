@@ -133,23 +133,39 @@ public class VoiceEntryActivity extends ActionBarActivity {
         setTitle(bookName);
     }
 
+    boolean isSubtractMode = false;
+
     private void setupSpeechParser() {
         WordAnalyzer wordAnalyzer = new WordAnalyzer(new ArrayList<>(categoriesMap.values()), new Date());
         speechParser = new SpeechParser(wordAnalyzer, new SpeechParser.OnActionListener() {
             @Override
             public void actionDate(Date dt) {
+                isSubtractMode = false;
                 setDate(dt);
             }
 
             @Override
             public void actionPrice(int price) {
+                if(isSubtractMode) {
+                    int cur = Integer.parseInt( ((EditText)findViewById(R.id.editTextPrice)).getText().toString());
+                    writeConsole(Integer.toString(cur) + " - " + Integer.toString(price) + " = " + (cur-price));
+                    price = cur - price;
+                    isSubtractMode = false;
+                }
+
                 setTextTo(R.id.editTextPrice, Integer.toString(price));
 
             }
 
             @Override
             public void actionCategory(String categoryName) {
+                isSubtractMode = false;
                 setSpinnerByCategoryName(categoryName);
+            }
+
+            @Override
+            public void actionSubtractMode() {
+                isSubtractMode = true;
             }
 
             @Override
@@ -158,6 +174,7 @@ public class VoiceEntryActivity extends ActionBarActivity {
                     return;
 
                 if(isCommand(token)) {
+                    isSubtractMode = false;
                     findCommand(token).action();
                     return;
                 }

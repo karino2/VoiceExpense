@@ -14,6 +14,7 @@ public class WordAnalyzer {
     Pattern fullDatePat = Pattern.compile("^([0-9]+)年([0-9]+)月([0-9]+)日");
     Pattern monthDatePat = Pattern.compile("^([0-9]+)月([0-9]+)日");
     Pattern dateOnlyPat = Pattern.compile("^([0-9]+)日");
+    Pattern subtractPat = Pattern.compile("^(ひく|引く|マイナス|-)");
 
 
     ArrayList<String> categories;
@@ -105,5 +106,14 @@ public class WordAnalyzer {
 
     public void setBaseDate(Date baseDate) {
         this.baseDate = baseDate;
+    }
+
+    public boolean isSubtract(String word) {
+        return isMatch(word, subtractPat);
+    }
+
+    public int subtractRemainingPos(String word) {
+        match(word, subtractPat);
+        return remainingPos();
     }
 }
