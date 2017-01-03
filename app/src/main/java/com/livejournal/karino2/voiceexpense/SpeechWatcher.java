@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 public class SpeechWatcher {
     public interface StatusListener {
         void onStartWaitSpeech();
-        void onWaitSpeechError();
+        void onWaitSpeechError(int errorno);
         void onResult(ArrayList<String> results);
 
     }
@@ -79,7 +78,7 @@ public class SpeechWatcher {
             public void onError(int error) {
                 log("onError");
                 state = State.NOT_LISTENING;
-                statusListener.onWaitSpeechError();
+                statusListener.onWaitSpeechError(error);
             }
 
             @Override
