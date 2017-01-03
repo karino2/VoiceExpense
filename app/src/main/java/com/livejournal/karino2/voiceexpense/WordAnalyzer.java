@@ -88,16 +88,37 @@ public class WordAnalyzer {
         return candidates.contains(word);
     }
 
-    public String findCategory(String word) {
-        for(String cat : categories) {
-            if(word.startsWith(cat))
-                return cat;
+    public static class CategoryResult {
+        public String matchedCategory;
+        boolean matched = false;
+
+        public boolean isMatched() {
+            return matched;
         }
-        return "";
+
+        int tokenLen = 0;
+        public int matchedTokenLen() {
+            return tokenLen;
+        }
+    }
+
+    CategoryResult categoryResult = new CategoryResult();
+
+    public CategoryResult findCategory(String word) {
+        for(String cat : categories) {
+            if(word.startsWith(cat)) {
+                categoryResult.matched = true;
+                categoryResult.matchedCategory = cat;
+                categoryResult.tokenLen = cat.length();
+                return categoryResult;
+            }
+        }
+        categoryResult.matched = false;
+        return categoryResult;
     }
 
     public boolean isCategory(String word) {
-        return (findCategory(word).length() != 0);
+        return findCategory(word).isMatched();
     }
 
     public ArrayList<String> tokenize(String fullEntry) {

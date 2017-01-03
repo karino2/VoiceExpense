@@ -48,9 +48,9 @@ public class SpeechParser {
                 actionListener.actionPrice(wordAnalyzer.toPrice(token));
                 token = token.substring(wordAnalyzer.remainingPos());
             } else if (wordAnalyzer.isCategory(token)) {
-                String cat = wordAnalyzer.findCategory(token);
-                actionListener.actionCategory(cat);
-                token = token.substring(cat.length());
+                WordAnalyzer.CategoryResult cat = wordAnalyzer.findCategory(token);
+                actionListener.actionCategory(cat.matchedCategory);
+                token = token.substring(cat.matchedTokenLen());
             } else if (wordAnalyzer.isSubtract(token)) {
                 actionListener.actionSubtractMode();
 
