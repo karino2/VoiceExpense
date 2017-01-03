@@ -53,14 +53,24 @@ public class WordAnalyzerTest extends TestCase {
         assertEquals("7月8日", input.substring(actual.matchedTokenLen()));
     }
 
-    /*
     public void testFindCategory_tailMatch() {
         String input = "交際費7月8日";
         WordAnalyzer.CategoryResult actual = target.findCategory(input);
         assertEquals("接待交際費", actual.matchedCategory);
         assertEquals("7月8日", input.substring(actual.matchedTokenLen()));
     }
-    */
+
+    public void testFindCategorySeparator_SplitByNumber() {
+        String input = "交際費7";
+        int actual = target.findCategorySeparator(input);
+        assertEquals("交際費", input.substring(0, actual));
+    }
+
+    public void testFindCategorySeparator_ReturnEndIfNoNumberExist() {
+        String input = "交際費";
+        int actual = target.findCategorySeparator(input);
+        assertEquals(input.length(), actual);
+    }
 
     public void testIsPrice() {
         assertTrue(target.isPrice("720円"));

@@ -15,6 +15,15 @@ public class WordAnalyzer {
     Pattern monthDatePat = Pattern.compile("^([0-9]+)月([0-9]+)日");
     Pattern dateOnlyPat = Pattern.compile("^([0-9]+)日");
     Pattern subtractPat = Pattern.compile("^(ひく|引く|マイナス|-)");
+    Pattern categorySeparatorPat = Pattern.compile("[0-9]+");
+
+    int findCategorySeparator(String word) {
+        Matcher matcher = categorySeparatorPat.matcher(word);
+        if(!matcher.find()) {
+            return word.length();
+        }
+        return matcher.start();
+    }
 
 
     ArrayList<String> categories;
@@ -100,20 +109,40 @@ public class WordAnalyzer {
         public int matchedTokenLen() {
             return tokenLen;
         }
+
+        public void setResult(String category, int tokenLength) {
+            matched = true;
+            matchedCategory = category;
+            tokenLen = tokenLength;
+        }
     }
 
     CategoryResult categoryResult = new CategoryResult();
 
     public CategoryResult findCategory(String word) {
+        categoryResult.matched = false;
+
         for(String cat : categories) {
             if(word.startsWith(cat)) {
-                categoryResult.matched = true;
-                categoryResult.matchedCategory = cat;
-                categoryResult.tokenLen = cat.length();
+                categoryResult.setResult(cat, cat.length());
                 return categoryResult;
             }
         }
-        categoryResult.matched = false;
+
+        // support tail match.
+        int sep = findCategorySeparator(word);
+        if(sep < 2)
+            return categoryResult;
+
+        String categoryCand = word.substring(0, sep);
+        for(String cat : categories) {
+            if(cat.endsWith(categoryCand)) {
+                categoryResult.setResult(cat, categoryCand.length());
+                return categoryResult;
+            }
+        }
+
+
         return categoryResult;
     }
 
