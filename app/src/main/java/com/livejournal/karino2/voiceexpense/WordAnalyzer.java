@@ -11,11 +11,13 @@ import java.util.regex.Pattern;
  */
 public class WordAnalyzer {
     Pattern pricePat = Pattern.compile("(^[0-9]+)(円|en|園)");
+    Pattern priceAltPat = Pattern.compile("^¥([0-9]+)");
     Pattern fullDatePat = Pattern.compile("^([0-9]+)年([0-9]+)月([0-9]+)日");
+    Pattern fullDateAltPat = Pattern.compile("^([0-9]+)[/\\.]([0-9]+)[/\\.]([0-9]+)");
     Pattern monthDatePat = Pattern.compile("^([0-9]+)月([0-9]+)日");
     Pattern dateOnlyPat = Pattern.compile("^([0-9]+)日");
     Pattern subtractPat = Pattern.compile("^(ひく|引く|マイナス|-)");
-    Pattern categorySeparatorPat = Pattern.compile("[0-9]+");
+    Pattern categorySeparatorPat = Pattern.compile("¥?[0-9]+");
 
     int findCategorySeparator(String word) {
         Matcher matcher = categorySeparatorPat.matcher(word);
@@ -36,6 +38,7 @@ public class WordAnalyzer {
 
     public boolean isDate(String word) {
         return isMatch(word, fullDatePat) ||
+                isMatch(word, fullDateAltPat) ||
                 isMatch(word, monthDatePat) ||
                 isMatch(word, dateOnlyPat);
     }
@@ -48,10 +51,15 @@ public class WordAnalyzer {
     public Date toDate(String word) {
         if(isMatch(word, fullDatePat)) {
             Matcher matcher = match(word, fullDatePat);
-            return new Date(getMatchedInt(word, matcher, 1)-1900,
-                    getMatchedInt(word, matcher, 2)-1,
+            return new Date(getMatchedInt(word, matcher, 1) - 1900,
+                    getMatchedInt(word, matcher, 2) - 1,
                     getMatchedInt(word, matcher, 3));
 
+        }else if(isMatch(word, fullDateAltPat)) {
+            Matcher matcher = match(word, fullDateAltPat);
+            return new Date(getMatchedInt(word, matcher, 1) - 1900,
+                    getMatchedInt(word, matcher, 2) - 1,
+                    getMatchedInt(word, matcher, 3));
         } else if(isMatch(word, monthDatePat)) {
             Matcher matcher = match(word, monthDatePat);
             return new Date(baseDate.getYear(),
@@ -66,7 +74,7 @@ public class WordAnalyzer {
     }
     public boolean isPrice(String word)
     {
-        return isMatch(word, pricePat);
+        return isMatch(word, pricePat) || isMatch(word, priceAltPat);
     }
 
     private boolean isMatch(String word, Pattern pat) {
@@ -83,9 +91,16 @@ public class WordAnalyzer {
 
     public int toPrice(String word)
     {
-        Matcher matcher = match(word, pricePat);
+        if(isMatch(word, pricePat)) {
+            Matcher matcher = match(word, pricePat);
 
-        return getMatchedInt(word, matcher, 1);
+            return getMatchedInt(word, matcher, 1);
+        } else{
+            Matcher matcher = match(word, priceAltPat);
+
+            return getMatchedInt(word, matcher, 1);
+
+        }
     }
 
     private int getMatchedInt(String word, Matcher matcher, int groupId) {

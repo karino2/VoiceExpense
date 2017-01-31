@@ -60,11 +60,46 @@ public class WordAnalyzerTest extends TestCase {
         assertEquals("7月8日", input.substring(actual.matchedTokenLen()));
     }
 
+    public void testFindCategory_tailMatch_altPrice() {
+        String input = "交際費¥539";
+        WordAnalyzer.CategoryResult actual = target.findCategory(input);
+        assertEquals("接待交際費", actual.matchedCategory);
+        assertEquals("¥539", input.substring(actual.matchedTokenLen()));
+
+        assertTrue(target.isCategory(input));
+    }
+
+    /*
+    public void testFindCategory_tailMatch_altPrice() {
+        String input = "交際費\\539";
+        WordAnalyzer.CategoryResult actual = target.findCategory(input);
+        assertEquals("接待交際費", actual.matchedCategory);
+        assertEquals("\\539", input.substring(actual.matchedTokenLen()));
+
+        assertTrue(target.isCategory(input));
+    }
+    */
+
     public void testFindCategorySeparator_SplitByNumber() {
         String input = "交際費7";
         int actual = target.findCategorySeparator(input);
         assertEquals("交際費", input.substring(0, actual));
     }
+
+    /*
+    public void testFindCategorySeparator_SplitByYen() {
+        String input = "交際費\\539";
+        int actual = target.findCategorySeparator(input);
+        assertEquals("交際費", input.substring(0, actual));
+    }
+    */
+
+    public void testFindCategorySeparator_SplitByYen2() {
+        String input = "交際費¥539";
+        int actual = target.findCategorySeparator(input);
+        assertEquals("交際費", input.substring(0, actual));
+    }
+
 
     public void testFindCategorySeparator_ReturnEndIfNoNumberExist() {
         String input = "交際費";
@@ -83,8 +118,16 @@ public class WordAnalyzerTest extends TestCase {
         assertTrue(target.isPrice("720en"));
         assertTrue(target.isPrice("720園"));
     }
+
+    public void testIsPriceAlt2() {
+        assertTrue(target.isPrice("¥720"));
+    }
+
     public void testToPrice() {
         assertEquals(720, target.toPrice("720円"));
+    }
+    public void testToPriceAlt() {
+        assertEquals(720, target.toPrice("¥720"));
     }
 
     public void testIsDate() {
@@ -94,9 +137,18 @@ public class WordAnalyzerTest extends TestCase {
         assertFalse(target.isDate("720円"));
     }
 
+    public void testIsDataAlt() {
+        assertTrue(target.isDate("2016.11.4"));
+        assertTrue(target.isDate("2016/11/4"));
+    }
+
     public void testToDate() {
         assertDateEqual(baseDate.getYear(), 7 - 1, 8, target.toDate("7月8日"));
         assertDateEqual(2013 - 1900, 7 - 1, 8, target.toDate("2013年7月8日"));
+    }
+    public void testToDateAlt() {
+        assertDateEqual(2013 - 1900, 7 - 1, 8, target.toDate("2013/7/8"));
+        assertDateEqual(2013 - 1900, 7 - 1, 8, target.toDate("2013.7.8"));
     }
 
     public void testToDate_Remaining() {
