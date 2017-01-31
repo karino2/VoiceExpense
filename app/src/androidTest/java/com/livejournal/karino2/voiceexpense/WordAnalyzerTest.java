@@ -141,6 +141,9 @@ public class WordAnalyzerTest extends TestCase {
         assertTrue(target.isDate("2016.11.4"));
         assertTrue(target.isDate("2016/11/4"));
     }
+    public void testIsDataAlt2() {
+        assertTrue(target.isDate("3dec"));
+    }
 
     public void testToDate() {
         assertDateEqual(baseDate.getYear(), 7 - 1, 8, target.toDate("7月8日"));
@@ -149,6 +152,9 @@ public class WordAnalyzerTest extends TestCase {
     public void testToDateAlt() {
         assertDateEqual(2013 - 1900, 7 - 1, 8, target.toDate("2013/7/8"));
         assertDateEqual(2013 - 1900, 7 - 1, 8, target.toDate("2013.7.8"));
+    }
+    public void testToDateAlt2() {
+        assertDateEqual(baseDate.getYear(), 12 - 1, 3, target.toDate("3dec"));
     }
 
     public void testToDate_Remaining() {

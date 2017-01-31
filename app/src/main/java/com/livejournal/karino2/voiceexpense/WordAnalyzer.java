@@ -15,6 +15,7 @@ public class WordAnalyzer {
     Pattern fullDatePat = Pattern.compile("^([0-9]+)年([0-9]+)月([0-9]+)日");
     Pattern fullDateAltPat = Pattern.compile("^([0-9]+)[/\\.]([0-9]+)[/\\.]([0-9]+)");
     Pattern monthDatePat = Pattern.compile("^([0-9]+)月([0-9]+)日");
+    Pattern monthDateAltPat = Pattern.compile("^([0-9]+)dec");
     Pattern dateOnlyPat = Pattern.compile("^([0-9]+)日");
     Pattern subtractPat = Pattern.compile("^(ひく|引く|マイナス|-)");
     Pattern categorySeparatorPat = Pattern.compile("¥?[0-9]+");
@@ -40,6 +41,7 @@ public class WordAnalyzer {
         return isMatch(word, fullDatePat) ||
                 isMatch(word, fullDateAltPat) ||
                 isMatch(word, monthDatePat) ||
+                isMatch(word, monthDateAltPat) ||
                 isMatch(word, dateOnlyPat);
     }
 
@@ -66,6 +68,11 @@ public class WordAnalyzer {
                     getMatchedInt(word, matcher, 1)-1,
                     getMatchedInt(word, matcher, 2));
 
+        } else if(isMatch(word, monthDateAltPat)) {
+            Matcher matcher = match(word, monthDateAltPat);
+            return new Date(baseDate.getYear(),
+                    12-1, // now only support december.
+                    getMatchedInt(word, matcher, 1));
         }
         Matcher matcher = match(word, dateOnlyPat);
         return new Date(baseDate.getYear(),
