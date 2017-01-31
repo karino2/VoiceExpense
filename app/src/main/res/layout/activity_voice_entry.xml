@@ -126,8 +126,10 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
-        android:layout_above="@id/adView"
+        android:layout_alignParentBottom="true"
         android:layout_below="@+id/gridLayoutForm" />
+    <!--         android:layout_above="@id/adView"
+    -->
 
     <!--
     <LinearLayout
@@ -137,6 +139,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"></LinearLayout>
         -->
+    <!--
     <com.google.android.gms.ads.AdView
         android:layout_width="wrap_content"
         android:layout_alignParentBottom="true"
@@ -146,6 +149,7 @@
         ads:adUnitId="ca-app-pub-1421062854011986/2109129153">
 
     </com.google.android.gms.ads.AdView>
+    -->
 
     <CheckBox
         android:layout_width="wrap_content"

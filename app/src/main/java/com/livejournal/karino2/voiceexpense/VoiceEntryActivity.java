@@ -107,9 +107,11 @@ public class VoiceEntryActivity extends ActionBarActivity {
 
         setMemoEnabled(false);
 
+        /*
         AdView ad = (AdView)findViewById(R.id.adView);
         AdRequest r = new AdRequest.Builder().build();
         ad.loadAd(r);
+        */
     }
 
     private void setMemoEnabled(boolean enabled) {
