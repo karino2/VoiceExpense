@@ -10,12 +10,12 @@ import java.util.regex.Pattern;
  * Created by karino on 7/8/15.
  */
 public class WordAnalyzer {
-    Pattern pricePat = Pattern.compile("(^[0-9]+)(円|en|園)");
-    Pattern priceAltPat = Pattern.compile("^¥([0-9]+)");
+    Pattern pricePat = Pattern.compile("(^[0-9,]+)(円|en|園)");
+    Pattern priceAltPat = Pattern.compile("^¥([0-9,]+)");
     Pattern fullDatePat = Pattern.compile("^([0-9]+)年([0-9]+)月([0-9]+)日");
     Pattern fullDateAltPat = Pattern.compile("^([0-9]+)[/\\.]([0-9]+)[/\\.]([0-9]+)");
     Pattern monthDatePat = Pattern.compile("^([0-9]+)月([0-9]+)日");
-    Pattern monthDateAltPat = Pattern.compile("^([0-9]+)dec");
+    Pattern monthDateAltPat = Pattern.compile("^([0-9]+)((jan)|(feb)|(mar)|(apr)|(may)|(jun)|(jul)|(aug)|(sep)|(oct)|(nov)|(dec))");
     Pattern dateOnlyPat = Pattern.compile("^([0-9]+)日");
     Pattern subtractPat = Pattern.compile("^(ひく|引く|マイナス|-)");
     Pattern categorySeparatorPat = Pattern.compile("¥?[0-9]+");
@@ -70,15 +70,30 @@ public class WordAnalyzer {
 
         } else if(isMatch(word, monthDateAltPat)) {
             Matcher matcher = match(word, monthDateAltPat);
+            int day = getMatchedInt(word, matcher, 1);
+            int month = getMatchedMonth(word, matcher, 2);
             return new Date(baseDate.getYear(),
-                    12-1, // now only support december.
-                    getMatchedInt(word, matcher, 1));
+                    month-1,
+                    day);
         }
         Matcher matcher = match(word, dateOnlyPat);
         return new Date(baseDate.getYear(),
                 baseDate.getMonth(),
                 getMatchedInt(word, matcher, 1));
     }
+
+    private int getMatchedMonth(String word, Matcher matcher, int groupId) {
+        String substr = word.substring(matcher.start(groupId), matcher.end(groupId));
+        String[] monthes = new String[] {
+                "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov","dec"
+        };
+        for(int i = 0; i < monthes.length; i++) {
+            if(substr.startsWith(monthes[i]))
+                return i+1;
+        }
+        return 1; // default is jan. don't care illegal case.
+    }
+
     public boolean isPrice(String word)
     {
         return isMatch(word, pricePat) || isMatch(word, priceAltPat);
@@ -101,13 +116,18 @@ public class WordAnalyzer {
         if(isMatch(word, pricePat)) {
             Matcher matcher = match(word, pricePat);
 
-            return getMatchedInt(word, matcher, 1);
+            return getMatchedIntWighoutComma(word, matcher, 1);
         } else{
             Matcher matcher = match(word, priceAltPat);
 
-            return getMatchedInt(word, matcher, 1);
+            return getMatchedIntWighoutComma(word, matcher, 1);
 
         }
+    }
+
+    private int getMatchedIntWighoutComma(String word, Matcher matcher, int groupId){
+        String substr = word.substring(matcher.start(groupId), matcher.end(groupId));
+        return Integer.parseInt(substr.replace(",", ""));
     }
 
     private int getMatchedInt(String word, Matcher matcher, int groupId) {

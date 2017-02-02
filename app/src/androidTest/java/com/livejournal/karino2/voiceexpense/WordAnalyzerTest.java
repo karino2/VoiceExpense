@@ -114,6 +114,10 @@ public class WordAnalyzerTest extends TestCase {
         assertFalse(target.isPrice("これは720円"));
     }
 
+    public void testIsPriceComma() {
+        assertTrue(target.isPrice("7,250円"));
+    }
+
     public void testIsPriceAlt() {
         assertTrue(target.isPrice("720en"));
         assertTrue(target.isPrice("720園"));
@@ -129,6 +133,9 @@ public class WordAnalyzerTest extends TestCase {
     public void testToPriceAlt() {
         assertEquals(720, target.toPrice("¥720"));
     }
+    public void testToPriceAltComma() {
+        assertEquals(3720, target.toPrice("¥3,720"));
+    }
 
     public void testIsDate() {
         assertTrue(target.isDate("7月8日"));
@@ -142,6 +149,18 @@ public class WordAnalyzerTest extends TestCase {
         assertTrue(target.isDate("2016/11/4"));
     }
     public void testIsDataAlt2() {
+        assertTrue(target.isDate("12jan"));
+        assertTrue(target.isDate("3feb"));
+        assertTrue(target.isDate("3mar"));
+        assertTrue(target.isDate("3apr"));
+        assertTrue(target.isDate("3may"));
+        assertTrue(target.isDate("3jun"));
+        assertTrue(target.isDate("3jul"));
+        assertTrue(target.isDate("3aug"));
+        assertTrue(target.isDate("3sep"));
+        assertTrue(target.isDate("3oct"));
+        assertTrue(target.isDate("3nov"));
+
         assertTrue(target.isDate("3dec"));
     }
 
@@ -155,6 +174,7 @@ public class WordAnalyzerTest extends TestCase {
     }
     public void testToDateAlt2() {
         assertDateEqual(baseDate.getYear(), 12 - 1, 3, target.toDate("3dec"));
+        assertDateEqual(baseDate.getYear(), 3 - 1, 3, target.toDate("3mar"));
     }
 
     public void testToDate_Remaining() {
