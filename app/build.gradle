@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    compileSdkVersion 28
+    buildToolsVersion '28.0.2'
 
     defaultConfig {
         applicationId "com.livejournal.karino2.voiceexpense"
         minSdkVersion 15
-        targetSdkVersion 21
-        versionCode 8
-        versionName "0.8"
+        targetSdkVersion 28
+        versionCode 9
+        versionName "0.9"
     }
     buildTypes {
         release {
@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.2'
-    compile 'com.google.android.gms:play-services:6.5.87'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:21.0.2'
+    implementation 'com.google.android.gms:play-services:6.5.87'
 }
