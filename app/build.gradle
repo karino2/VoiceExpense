@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.livejournal.karino2.voiceexpense"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 9
         versionName "0.9"

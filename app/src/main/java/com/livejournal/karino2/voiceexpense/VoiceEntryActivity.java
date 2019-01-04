@@ -469,7 +469,8 @@ public class VoiceEntryActivity extends AppCompatActivity {
 
     private void setResourceToVoiceState(int rsid) {
         ImageView iv =(ImageView)findViewById(R.id.imageViewVoiceState);
-        iv.setImageResource(rsid);
+        if(iv.isAttachedToWindow())
+            iv.setImageResource(rsid);
     }
 
     void log(String msg) {
