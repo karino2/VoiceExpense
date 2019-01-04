@@ -15,7 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,9 +27,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -37,7 +34,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class BookActivity extends ActionBarActivity {
+public class BookActivity extends AppCompatActivity {
 
     static final int INPUT_DIALOG_ID = 1;
     static final int QUERY_DELETE_DIALOG_ID = 2;
@@ -81,10 +78,6 @@ public class BookActivity extends ActionBarActivity {
             }
         });
 
-
-        AdView ad = (AdView)findViewById(R.id.adView);
-        AdRequest r = new AdRequest.Builder().build();
-        ad.loadAd(r);
 
         if(savedInstanceState == null) {
 
