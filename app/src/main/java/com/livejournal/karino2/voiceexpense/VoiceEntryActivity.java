@@ -100,7 +100,7 @@ public class VoiceEntryActivity extends AppCompatActivity {
         {
             loadEntry(entryId);
         } else {
-            setDate(new Date());
+            setToday();
         }
 
         setMemoEnabled(false);
@@ -110,6 +110,10 @@ public class VoiceEntryActivity extends AppCompatActivity {
         AdRequest r = new AdRequest.Builder().build();
         ad.loadAd(r);
         */
+    }
+
+    private void setToday() {
+        setDate(new Date());
     }
 
     private void setMemoEnabled(boolean enabled) {
@@ -237,6 +241,15 @@ public class VoiceEntryActivity extends AppCompatActivity {
                 smartFinish();
             }
         });
+
+        commandList.add(new Command("今日"){
+
+            @Override
+            public void action() {
+                setToday();
+            }
+        });
+
     }
 
     private void smartFinish() {
