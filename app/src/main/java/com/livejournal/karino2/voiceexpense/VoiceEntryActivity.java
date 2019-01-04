@@ -522,6 +522,15 @@ public class VoiceEntryActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        // when onPause called and callback not called correctly, ignoreOnce state sometimes becomes wrong.
+        // clear here.
+        ignoreOnce = false;
+    }
+
+    @Override
     protected void onPause() {
         watcher.tearDown();
         setVoiceButtonCheckedWithoutAction(false);
