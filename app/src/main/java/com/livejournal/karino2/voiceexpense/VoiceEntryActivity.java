@@ -230,6 +230,20 @@ public class VoiceEntryActivity extends AppCompatActivity {
                 startHistoryActivity();
             }
         });
+        commandList.add(new Command("以上"){
+
+            @Override
+            public void action() {
+                smartFinish();
+            }
+        });
+    }
+
+    private void smartFinish() {
+        if(!getETText(R.id.editTextPrice).isEmpty()) {
+            save();
+        }
+        finishAffinity();
     }
 
     private void actionOK() {
