@@ -1,5 +1,7 @@
 package com.livejournal.karino2.voiceexpense;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -193,7 +195,12 @@ public class WordAnalyzer {
     }
 
     public ArrayList<String> tokenize(String fullEntry) {
-        return new ArrayList<>(Arrays.asList(fullEntry.split(" ")));
+        return new ArrayList<>(Arrays.asList(normalize(fullEntry).split(" ")));
+    }
+
+    @NonNull
+    private String normalize(String fullEntry) {
+        return fullEntry.replace("、", "").replace("。", "").replaceAll("([0-9]) 円", "$1円");
     }
 
     public void setBaseDate(Date baseDate) {
