@@ -181,7 +181,7 @@ public class BookActivity extends AppCompatActivity {
             String filename = bookName + "_" + timeStampFormat.format(new Date()) + ".csv";
             File file = new File(dir, filename);
 
-            showMessage("saved at " + file.getAbsolutePath());
+            showMessage("Saved at " + file.getAbsolutePath());
 
             BufferedWriter bw = new BufferedWriter(new FileWriter(file), 8*1024);
             Cursor cursor = database.fetchAllEntry(id);
@@ -198,13 +198,6 @@ public class BookActivity extends AppCompatActivity {
                 cursor.close();
             }
             bw.close();
-
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_SEND);
-            String mimeType = "text/csv";
-            intent.setType(mimeType);
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-            startActivity(Intent.createChooser(intent, "Export as CSV"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -249,19 +242,8 @@ public class BookActivity extends AppCompatActivity {
     }
 
     public static File getFileStoreDirectory() throws IOException {
-        File dir = new File(Environment.getExternalStorageDirectory(), "VoiceExpense");
-        ensureDirExist(dir);
-        return dir;
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
     }
-
-    public static  void ensureDirExist(File dir) throws IOException {
-        if(!dir.exists()) {
-            if(!dir.mkdir()){
-                throw new IOException();
-            }
-        }
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
