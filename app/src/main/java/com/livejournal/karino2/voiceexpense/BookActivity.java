@@ -1,5 +1,6 @@
 package com.livejournal.karino2.voiceexpense;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContextWrapper;
@@ -39,7 +40,6 @@ public class BookActivity extends AppCompatActivity {
 
     static final int INPUT_DIALOG_ID = 1;
     static final int QUERY_DELETE_DIALOG_ID = 2;
-    private static final int REQUEST_PICK_FILE = 3;
     static final int RENAME_DIALOG_ID = 4;
 
     Database database;
@@ -126,40 +126,8 @@ public class BookActivity extends AppCompatActivity {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.add(Menu.NONE, R.id.rename_item, Menu.NONE, R.string.rename_label);
         menu.add(Menu.NONE, R.id.export_item, Menu.NONE, R.string.export_label);
-        menu.add(Menu.NONE, R.id.import_item, Menu.NONE, R.string.import_menu_label);
         menu.add(Menu.NONE, R.id.delete_item, Menu.NONE, R.string.delete_label);
     }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch(requestCode)
-        {
-            case REQUEST_PICK_FILE:
-                if(resultCode != RESULT_OK)
-                    return;
-
-                    // start import.
-                String path = data.getData().getPath();
-                EntryStore store = new EntryStore(database);
-                store.setCategoryMap(database.fetchCategories());
-                CsvImporter importer = new CsvImporter(selectedBookId, store);
-                // showMessage("import: " + path);
-                try {
-                    importer.importCsv(path);
-                    showMessage("Import Done");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    showMessage("IO exception while reading!");
-                } catch( RuntimeException re)
-                {
-                    showMessage("RuntimeException while reading csv: "+ re.getMessage());
-                }
-                break;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
 
     long selectedBookId = -1;
 
@@ -175,6 +143,7 @@ public class BookActivity extends AppCompatActivity {
         selectedBookId = savedInstanceState.getLong("SELECTED_BOOK_ID");
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -194,14 +163,6 @@ public class BookActivity extends AppCompatActivity {
             case R.id.export_item:
                 exportBook(info.id, getChosenBookName(info));
                 break;
-            case R.id.import_item:
-                selectedBookId = info.id;
-                showMessage("Choose csv file");
-                Intent i = new Intent();
-                i.setAction(Intent.ACTION_GET_CONTENT);
-                i.setType("text/csv");
-                startActivityForResult(i, REQUEST_PICK_FILE);
-                return true;
 
         }
         return super.onContextItemSelected(item);
