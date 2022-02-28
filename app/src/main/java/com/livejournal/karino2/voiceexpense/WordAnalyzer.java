@@ -1,6 +1,6 @@
 package com.livejournal.karino2.voiceexpense;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;

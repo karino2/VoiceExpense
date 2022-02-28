@@ -8,8 +8,6 @@ import android.database.Cursor;
 import android.graphics.Paint;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +22,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cursoradapter.widget.SimpleCursorAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
