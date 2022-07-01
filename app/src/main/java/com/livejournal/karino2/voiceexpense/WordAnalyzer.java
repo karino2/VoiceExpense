@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * Created by karino on 7/8/15.
  */
 public class WordAnalyzer {
-    Pattern pricePat = Pattern.compile("(^[0-9,]+)(円|en|園)");
+    Pattern pricePat = Pattern.compile("(^[0-9,]+)(円|en|園|苑)");
     Pattern priceAltPat = Pattern.compile("^¥([0-9,]+)");
     Pattern fullDatePat = Pattern.compile("^([0-9]+)年([0-9]+)月([0-9]+)日");
     Pattern fullDateAltPat = Pattern.compile("^([0-9]+)[/\\.]([0-9]+)[/\\.]([0-9]+)");
