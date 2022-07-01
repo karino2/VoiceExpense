@@ -1,9 +1,11 @@
 package com.livejournal.karino2.voiceexpense;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Paint;
 import android.hardware.Sensor;
@@ -23,7 +25,10 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.cursoradapter.widget.SimpleCursorAdapter;
 
 import java.text.SimpleDateFormat;
@@ -35,7 +40,7 @@ import java.util.List;
 public class VoiceEntryActivity extends AppCompatActivity {
 
     final int DIALOG_ID_HELP = 1;
-
+    final int PERMISSION_REQUEST_RECORD_AUDIO_ID = 2;
     Database database;
     long bookId;
     long entryId = -1;
@@ -80,8 +85,13 @@ public class VoiceEntryActivity extends AppCompatActivity {
                     return;
                 }
                 if(isChecked) {
-                    autoWaitSpeechAgain = true;
-                    watcher.startListening();
+                    if(ContextCompat.checkSelfPermission(VoiceEntryActivity.this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)
+                    {
+                        autoWaitSpeechAgain = true;
+                        watcher.startListening();
+                    } else {
+                        ActivityCompat.requestPermissions(VoiceEntryActivity.this, new String[]{ Manifest.permission.RECORD_AUDIO },PERMISSION_REQUEST_RECORD_AUDIO_ID);
+                    }
                 } else {
                     autoWaitSpeechAgain = false;
                     watcher.stopListening();
@@ -600,6 +610,19 @@ public class VoiceEntryActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_RECORD_AUDIO_ID)
+        {
+            if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                startListening();
+                return;
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void startHistoryActivity() {

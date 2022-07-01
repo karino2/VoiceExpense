@@ -1,6 +1,7 @@
 package com.livejournal.karino2.voiceexpense;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognitionListener;
@@ -130,7 +131,7 @@ public class SpeechWatcher {
             public void run() {
                 if(startRegistered) {
                     state = State.WAIT_SPEECH_READY;
-                    recognizer.startListening(RecognizerIntent.getVoiceDetailsIntent(context));
+                    recognizer.startListening(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH));
                 }
                 startRegistered = false;
 
